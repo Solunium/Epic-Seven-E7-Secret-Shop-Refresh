@@ -1,6 +1,6 @@
 # Epic Seven Secret Shop Refresh with GUI
 ## Showcase
-gif here
+![](https://github.com/sya1999/Epic-Seven-Secret-Shop-Refresh/blob/main/assets/E7.gif)
 ## Getting Started
 ### Quick Start:
 **Step 1.** Download the [latest release](https://github.com/sya1999/Epic-Seven-Secret-Shop-Refresh/releases) make sure to download (**E7 Secret Shop Refresh.zip**)
