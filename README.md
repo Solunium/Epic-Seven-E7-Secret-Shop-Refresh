@@ -7,15 +7,17 @@ gif here
 
 **Step 2.** Extract the zip file to any directory
 
-**Step 3.** Launch **E7SecretShopRefresh** in the folder to open the Secret Shop Refresh GUI
+**Step 3.** Launch Epic Seven on your emulator
 
-**Step 4.** Select your emulator from the drop down box	
+**Step 4.** Launch **E7SecretShopRefresh** in the folder that you just extracted
+
+**Step 5.** Select your emulator from the drop down box	
   - If you can't find it, you need to type in the window name of your emulator and press enter
   - you can see the name of you emulator by hovering over the taskbar icon of your emulator
 
-**Step 5.** (Optional) you can change the setting, refer to [Setting section](https://github.com/sya1999/Epic-Seven-Secret-Shop-Refresh/tree/main#settings)
+**Step 6.** (Optional) you can change the setting, refer to [Setting section](https://github.com/sya1999/Epic-Seven-Secret-Shop-Refresh/tree/main#settings)
 
-**Step 6.** Press the "start refresh" button
+**Step 7.** Press the "start refresh" button
 **- PRESS ESC KEY TO STOP THE PROGRAM**
 	
 You can check your refreshing history in the folder called **ShopRefreshes**
