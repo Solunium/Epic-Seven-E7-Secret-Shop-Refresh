@@ -3,7 +3,7 @@
 gif here
 ## Getting Started
 ### Quick Start:
-**Step 1.** Download the [latest release](https://github.com/sya1999/Epic-Seven-Secret-Shop-Refresh/releases) make sure to download (E7 Secret Shop Refresh.zip)
+**Step 1.** Download the [latest release](https://github.com/sya1999/Epic-Seven-Secret-Shop-Refresh/releases) make sure to download (**E7 Secret Shop Refresh.zip**)
 
 **Step 2.** Extract the zip file to any directory
 
@@ -33,7 +33,7 @@ pip install -r requirements.txt
 ```
 **Step 5.** Edit and run E7SecretShopRefresh.py or main.ipynb
 
-**Step 6.** 
+**Step 6.** (Optional) use pyinstaller to create an executable
 
 ## Settings:
 It can be helpful to select the friendship bookmark to check if the program is detecting items correctly	
