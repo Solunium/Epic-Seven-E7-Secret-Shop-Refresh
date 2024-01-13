@@ -672,19 +672,24 @@ if __name__ == '__main__':
     gui = AutoRefreshGUI()
     
     # # Uncomment below code start secret shop without gui, remember to comment everything above
+    # # Here are some parameter that you can pass in to secret shop calss
+    # # title_name: str      name of your emulator window
+    # # call_back: func      callback function when the macro terminates
+    # # budget: int          the ammont of skystone that you want to spend
+    # # debug: boolean       this will help you debug problem with the program
+
     # print('Here are the active windows\n')
     # for title in gw.getAllTitles():
     #     if title != '':
     #         print(title)
-    #
+    
     # win = input('Emulator: ')
     # if win != '':
+    
     #     ssr = SecretShopRefresh(win, budget=None)       #init macro instance with the application title being epic seven
     #     ssr.addShopItem('cov.jpg', 'Covenant bookmark', 184000)     #adding items to refresh, cov.jpg needs to be in: assets/cov.jpg
     #     ssr.addShopItem('mys.jpg', 'Mystic medal', 280000)
     #     #ssr.addShopItem('fb.jpg', 'Friendship bookmark', 18000)     #comment out this, if you don't need to test
     #     input('press any key to start')
     #     ssr.start()     #Start macro instance, use ESC to terminate macro
-
-
-    # Eric baby piles approved
+    # # Eric baby piles approved
