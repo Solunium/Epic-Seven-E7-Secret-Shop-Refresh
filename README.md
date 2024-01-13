@@ -13,7 +13,7 @@ gif here
   - If you can't find it, you need to type in the window name of your emulator and press enter
   - you can see the name of you emulator by hovering over the taskbar icon of your emulator
 
-**Step 5.** (Optional) you can change the setting, refer to [setting section](https://github.com/sya1999/Epic-Seven-Secret-Shop-Refresh/edit/main/README.md#settings)
+**Step 5.** (Optional) you can change the setting, refer to [Setting section](https://github.com/sya1999/Epic-Seven-Secret-Shop-Refresh/tree/main#settings)
 
 **Step 6.** Press the "start refresh" button
 **- PRESS ESC KEY TO STOP THE PROGRAM**
