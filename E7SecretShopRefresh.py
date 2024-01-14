@@ -249,7 +249,7 @@ class SecretShopRefresh:
             return None, None
         #Display exit key
         hint = tk.Toplevel(self.tk_instance)
-        hint.geometry(r'200x200+0+%d' % (self.window.height))
+        hint.geometry(r'200x200+%d+%d' % (self.window.left, self.window.top+self.window.height))
         hint.title('Hint')
         hint.iconbitmap(os.path.join('assets','icon.ico'))
         tk.Label(master=hint, text='Press ESC to stop refreshing!', bg=bg_color, fg=fg_color).pack()
