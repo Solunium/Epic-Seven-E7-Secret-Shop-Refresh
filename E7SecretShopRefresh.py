@@ -14,6 +14,7 @@ import pygetwindow as gw
 import cv2
 import numpy as np
 import keyboard
+from PIL import ImageGrab
 
 class ShopItem:
     def __init__(self, path:str, name='', price=0, count=0):
@@ -291,7 +292,10 @@ class SecretShopRefresh:
             # window.restore()
             self.window.activate()
 
-            screenshot = pyautogui.screenshot(region=(self.window.left, self.window.top, self.window.width, self.window.height))
+            #fix pyautogui's multiscreen bug
+            #screenshot = pyautogui.screenshot(region=(self.window.left, self.window.top, self.window.width, self.window.height))
+            region=[self.window.left, self.window.top, self.window.width, self.window.height]
+            screenshot = ImageGrab.grab(bbox=(region[0], region[1], region[2] + region[0], region[3] + region[1]), all_screens=True)
             screenshot = np.array(screenshot)
             return screenshot
         
