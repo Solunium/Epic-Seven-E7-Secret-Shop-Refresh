@@ -1,2 +1,5 @@
 /.venv
 /ShopRefreshes
+/build
+/dist
+*.spec
