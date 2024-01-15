@@ -4,12 +4,13 @@ __pycache__/
 *$py.class
 
 # virtual environment
-/.venv
+.venv/
 
 # pyinstaller
-/build
-/dist
+build/
+dist/
+*.manifest
 *.spec
 
 # E7SecretShopRefresh.py
-/ShopRefreshes
+ShopRefreshes/
