@@ -37,7 +37,7 @@ pip install -r requirements.txt
 
 **Step 6.** (Optional) Use pyinstaller to create an executable
 
-## Settings:
+## Settings
 It can be helpful to select the friendship bookmark to check if the program is detecting items correctly	
 
 Increase mouse speed, if the mouse is moving faster than ui animation
@@ -48,3 +48,7 @@ You can stay with the default speed setting in most cases
 (I don't recommend lowering the mouse and screen speed if you don't know what you are doing)
 
 By not setting a skystone budget, the program will run till ESC is pressed
+
+You can toggle on and off hint which is a live counter of the items purchased
+
+by turning off auto placement, you can move the emulator to another monitor
