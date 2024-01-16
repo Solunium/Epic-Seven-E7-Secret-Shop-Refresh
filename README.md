@@ -36,7 +36,9 @@ pip install -r requirements.txt
 **Step 5.** Open and run E7SecretShopRefresh.py or main.ipynb, go to the main function or app config class to make edit
 
 **Step 6.** (Optional) Use pyinstaller to create an executable
-
+```
+pyinstaller -F --hide-console hide-early -i assets/icon.ico E7SecretShopRefresh.py
+```
 ## Settings
 It can be helpful to select the friendship bookmark to check if the program is detecting items correctly	
 
