@@ -88,7 +88,7 @@ class RefreshStatistic:
             writer.writerow(data)
 
 class SecretShopRefresh:
-    def __init__(self, title_name: str, callback = None, tk_instance: tk = None, budget: int = None, debug: bool = False):
+    def __init__(self, title_name: str, callback = None, tk_instance: tk = None, budget: int = None, allow_move: bool = False, debug: bool = False):
         #init state
         self.debug = debug
         self.asset_image = []
@@ -98,6 +98,7 @@ class SecretShopRefresh:
         self.screenshot_sleep = 0.3
         self.callback = callback if callback else self.refreshFinishCallback
         self.budget = budget
+        self.allow_move = allow_move
 
         self.loading_asset = cv2.imread(os.path.join('assets', 'loading.jpg'))
         self.loading_asset= cv2.cvtColor(self.loading_asset, cv2.COLOR_BGR2GRAY)
@@ -139,8 +140,7 @@ class SecretShopRefresh:
         try:
             if self.window.isMaximized or self.window.isMinimized:
                 self.window.restore()
-
-            self.window.moveTo(0, 0)
+            if not self.allow_move: self.window.moveTo(0, 0)
             self.window.resizeTo(906, 539)
         except Exception as e:
             print(e)
@@ -671,7 +671,15 @@ class AutoRefreshGUI:
         self.root.title('Press ESC to stop!')
         self.lock_start_button = True
         self.start_button.config(state=tk.DISABLED)
-        self.ssr = SecretShopRefresh(title_name=self.title_name, callback=self.refreshComplete, tk_instance=self.root, debug=self.app_config.DEBUG)
+
+        if self.hint_cbv.get() == 1:
+            self.ssr = SecretShopRefresh(title_name=self.title_name, callback=self.refreshComplete, tk_instance=self.root, debug=self.app_config.DEBUG)
+        else:
+            self.ssr = SecretShopRefresh(title_name=self.title_name, callback=self.refreshComplete, debug=self.app_config.DEBUG)
+
+        if self.move_zerozero_cbv.get() != 1:
+            self.ssr.allow_move = True
+
         self.ssr.title_name = self.title_name
 
         #setting item to refresh for
