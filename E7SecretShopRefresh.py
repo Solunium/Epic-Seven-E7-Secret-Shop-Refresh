@@ -469,8 +469,8 @@ class AutoRefreshGUI:
         self.root.attributes("-alpha", 0.95)
 
         self.root.title('SHOP AUTO REFRESH')
-        self.root.geometry('480x690')
-        self.root.minsize(420, 690)
+        self.root.geometry('420x745')
+        self.root.minsize(420, 745)
         icon_path = os.path.join('assets', 'gui_icon.ico')
         self.root.iconbitmap(icon_path)
         self.title_name = ''
@@ -517,6 +517,30 @@ class AutoRefreshGUI:
         titles_combo_box.bind('<<ComboboxSelected>>', onSelect)
         titles_combo_box.bind('<Return>', onEnter)
         
+        #special setting
+        special_frame = tk.Frame(self.root, bg=self.unite_bg_color)
+        self.hint_cbv = tk.IntVar()
+        self.move_zerozero_cbv = tk.IntVar()
+        
+        def setupSpecialSetting(label, value):
+            frame = tk.Frame(special_frame, bg=self.unite_bg_color)
+            special_label = tk.Label(master=frame,
+                             text=label,
+                             bg=self.unite_bg_color,
+                             fg=self.unite_text_color,
+                             font=('Helvetica',12))
+            special_cb = tk.Checkbutton(master=frame,
+                                font=('Helvetica',14),
+                                variable=value,
+                                bg=self.unite_bg_color)
+            special_cb.select()
+            special_label.pack(side=tk.LEFT)
+            special_cb.pack(side=tk.RIGHT)
+            frame.pack()
+
+        setupSpecialSetting('Hint:', self.hint_cbv)
+        setupSpecialSetting('Auto move emulator window to top left:', self.move_zerozero_cbv)
+
         #setting frame
         setting_frame = tk.Frame(self.root)
         setting_frame.config(bg=self.unite_bg_color)        #apply ui change here
@@ -567,7 +591,7 @@ class AutoRefreshGUI:
         for index, path in enumerate(self.app_config.ALL_PATH):
             self.keep_image_open.append(ImageTk.PhotoImage(Image.open(os.path.join('assets', path))))
             self.packItem(index, path)
-        self.packMessage('Setting:', 18)
+        self.packMessage('Setting:', 18, (10,0))
         #Step 3 Select setting
         #check if input is valid
         def validateFloat(value, action):
@@ -601,8 +625,10 @@ class AutoRefreshGUI:
         self.limit_spend_entry = packSettingEntry('How many skystone do you want to spend? :', None)
         self.limit_spend_entry.config(validate='key', validatecommand=(valid_int_reg, '%P'))
 
-
+        #Step 3.5 special setting and setting
+        special_frame.pack(pady=(0,5))
         setting_frame.pack()
+
         #Step 4 profit
         self.start_button.pack(pady=(30,0))
         
@@ -629,9 +655,9 @@ class AutoRefreshGUI:
         image_label.pack(side=tk.RIGHT)
         frame.pack()
 
-    def packMessage(self, message, text_size=14):               #apply ui change here
+    def packMessage(self, message, text_size=14, pady=10):               #apply ui change here
         new_label = tk.Label(self.root, text=message, font=('Helvetica',text_size), bg=self.unite_bg_color, fg=self.unite_text_color)
-        new_label.pack(pady=10)
+        new_label.pack(pady=pady)
         return new_label
 
     def refreshComplete(self):
