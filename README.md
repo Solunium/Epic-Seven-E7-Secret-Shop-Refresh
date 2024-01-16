@@ -51,4 +51,4 @@ By not setting a skystone budget, the program will run till ESC is pressed
 
 You can toggle on and off hint which is a live counter of the items purchased
 
-by turning off auto placement, you can move the emulator to another monitor
+by turning off auto placement, you can move the emulator to another monitor (After turning this off, make sure the entire emulator window stays on-screen)
