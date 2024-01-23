@@ -113,9 +113,12 @@ class SecretShopRefresh:
 
     #Start shop refresh macro
     def start(self):
-        if not self.loop_finish:
+        if self.loop_active or not self.loop_finish:
             return
+        
         self.processAsset()
+        self.loop_active = True
+        self.loop_finish = False 
         keyboard_thread = threading.Thread(target=self.checkKeyPress)
         refresh_thread = threading.Thread(target=self.shopRefreshLoop)
         keyboard_thread.daemon = True
@@ -125,16 +128,15 @@ class SecretShopRefresh:
 
     #Threads
     def checkKeyPress(self):
-        self.loop_active = True
-        while self.loop_active:
-            self.loop_active = False if keyboard.is_pressed('esc') else True
+        while self.loop_active and not self.loop_finish:
+            self.loop_active = not keyboard.is_pressed('esc')
+        self.loop_active = False
         print('Terminating shop refresh ...')
 
     def refreshFinishCallback(self):
         print('Terminated!')
 
     def shopRefreshLoop(self):
-        self.loop_finish = False 
         length = len(self.asset_image)
         
         try:
@@ -224,6 +226,7 @@ class SecretShopRefresh:
                 self.clickRefresh()
                 self.rs_instance.incrementRefreshCount()
                 time.sleep(self.mouse_sleep)
+                if self.window.title != self.title_name: break
 
         except Exception as e:
             print(e)
@@ -679,8 +682,6 @@ class AutoRefreshGUI:
 
         if self.move_zerozero_cbv.get() != 1:
             self.ssr.allow_move = True
-
-        self.ssr.title_name = self.title_name
 
         #setting item to refresh for
         rs_instance = RefreshStatistic()
