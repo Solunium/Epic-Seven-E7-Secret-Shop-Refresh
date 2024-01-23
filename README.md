@@ -36,8 +36,10 @@ pip install -r requirements.txt
 **Step 5.** Open and run E7SecretShopRefresh.py or main.ipynb, go to the main function or app config class to make edit
 
 **Step 6.** (Optional) Use pyinstaller to create an executable
-
-## Settings:
+```
+pyinstaller -F --hide-console hide-early -i assets/icon.ico E7SecretShopRefresh.py
+```
+## Settings
 It can be helpful to select the friendship bookmark to check if the program is detecting items correctly	
 
 Increase mouse speed, if the mouse is moving faster than ui animation
@@ -48,3 +50,7 @@ You can stay with the default speed setting in most cases
 (I don't recommend lowering the mouse and screen speed if you don't know what you are doing)
 
 By not setting a skystone budget, the program will run till ESC is pressed
+
+You can toggle on and off hint which is a live counter of the items purchased
+
+by turning off auto placement, you can move the emulator to another monitor (After turning this off, make sure the entire emulator window stays on-screen)
