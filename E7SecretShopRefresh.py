@@ -201,7 +201,7 @@ class SecretShopRefresh:
 
                 #take screenshot, check for items, buy all items that appear
                 time.sleep(sliding_time)    #This is a constant sleep to account for the item sliding in frame
-                self.clickBuyBundle(purchased)
+                if not self.clickBuyBundle(purchased): break
                 
                 #real time count UI update
                 if hint: updateMiniDisplay()
@@ -213,7 +213,7 @@ class SecretShopRefresh:
                 if not self.loop_active: break
 
                 #take screenshot, check for items, buy all items that appear, update real time count UI if needed
-                self.clickBuyBundle(purchased)
+                if not self.clickBuyBundle(purchased): break
                 if hint: updateMiniDisplay()
                 if not self.loop_active: break
                 
@@ -307,15 +307,22 @@ class SecretShopRefresh:
             return None
         
     def checkLoading(self, process_screenshot):
-        for _ in range(15):
-            result = cv2.matchTemplate(process_screenshot, self.loading_asset, cv2.TM_CCOEFF_NORMED)
-            loc = np.where(result >= 0.75)
-            if loc[0].size <= 0:
-                return process_screenshot
-            
+        result = cv2.matchTemplate(process_screenshot, self.loading_asset, cv2.TM_CCOEFF_NORMED)
+        loc = np.where(result >= 0.75)
+        if loc[0].size <= 0:
+            return process_screenshot
+        
+        for _ in range(14):
             time.sleep(1)
             screenshot = self.takeScreenshot()
             process_screenshot = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
+            result = cv2.matchTemplate(process_screenshot, self.loading_asset, cv2.TM_CCOEFF_NORMED)
+            loc = np.where(result >= 0.75)
+            if loc[0].size <= 0:
+                time.sleep(1.5)
+                screenshot = self.takeScreenshot()
+                process_screenshot = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
+                return process_screenshot
 
         return None
 
@@ -350,11 +357,10 @@ class SecretShopRefresh:
 
         #checks if loading screen is blocking
         check_screen = self.checkLoading(process_screenshot)
-        if check_screen is not None:
-            process_screenshot = check_screen
+        if check_screen is None:
+            return False      
         else:
-            return
-
+            process_screenshot = check_screen
 
         if self.debug:
             cv2.imshow('Press any key to continue ...', process_screenshot)
@@ -369,6 +375,7 @@ class SecretShopRefresh:
             else:
                 purchased[index] = self.clickBuy(self.findItemPosition(process_screenshot, image), index)
                 time.sleep(self.mouse_sleep)
+        return True
 
     def clickBuy(self, pos, index):
         if pos is None:
