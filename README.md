@@ -7,7 +7,7 @@
 
 **Step 2.** Extract the zip file to any directory
 
-**Step 3.** Launch Epic Seven on your emulator
+**Step 3.** Launch Epic Seven on your emulator, make sure to close dispatch mission and news
 
 **Step 4.** Launch **E7SecretShopRefresh** in the folder that you just extracted
 
