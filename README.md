@@ -17,6 +17,8 @@
 
 **Step 6.** (Optional) you can change the setting, refer to [Setting section](https://github.com/sya1999/Epic-Seven-Secret-Shop-Refresh/tree/main?tab=readme-ov-file#settings)
 
+**Step 6.5:** If you are using **GOOGLE PLAY BETA with DUAL MONITOR**, untick auto placement setting and move emulator to secondary monitor
+
 **Step 7.** Press the "start refresh" button
 **- PRESS ESC KEY TO STOP THE PROGRAM**
 	
