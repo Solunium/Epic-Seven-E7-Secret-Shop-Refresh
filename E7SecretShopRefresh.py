@@ -382,7 +382,7 @@ class SecretShopRefresh:
             return False
         x, y = pos
         pyautogui.moveTo(x, y)
-        pyautogui.click()
+        pyautogui.click(clicks=2, interval=self.mouse_sleep)
         time.sleep(self.mouse_sleep)
         self.clickConfirmBuy(index)
         return True
@@ -391,7 +391,7 @@ class SecretShopRefresh:
         x = self.window.left + self.window.width * 0.55
         y = self.window.top + self.window.height * 0.70
         pyautogui.moveTo(x, y)
-        pyautogui.click()
+        pyautogui.click(clicks=2, interval=self.mouse_sleep)
         time.sleep(self.mouse_sleep)
         time.sleep(self.screenshot_sleep)   #Account for Loading
         self.rs_instance.incrementItemCountOnIndex(index)
@@ -406,7 +406,7 @@ class SecretShopRefresh:
         x = self.window.left + self.window.width * 0.20
         y = self.window.top + self.window.height * 0.90
         pyautogui.moveTo(x, y)
-        pyautogui.click()
+        pyautogui.click(clicks=2, interval=self.mouse_sleep)
         time.sleep(self.mouse_sleep)
         self.clickConfirmRefresh()
 
@@ -414,7 +414,7 @@ class SecretShopRefresh:
         x = self.window.left + self.window.width * 0.58
         y = self.window.top + self.window.height * 0.62
         pyautogui.moveTo(x, y)
-        pyautogui.click()
+        pyautogui.click(clicks=2, interval=self.mouse_sleep)
         time.sleep(self.screenshot_sleep)   #Account for Loading
 
     #SHOP MACRO
