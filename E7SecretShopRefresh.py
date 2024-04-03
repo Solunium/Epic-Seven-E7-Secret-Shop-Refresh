@@ -352,6 +352,11 @@ class SecretShopRefresh:
     
     #BUY MACRO
     def clickBuyBundle(self, purchased):
+        
+        # #press cancel on dispatch mission
+        # pyautogui.moveTo(self.window.left + self.window.width * 0.55, self.window.top + self.window.height * 0.80)
+        # pyautogui.click()
+
         screenshot = self.takeScreenshot()
         process_screenshot = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
 
