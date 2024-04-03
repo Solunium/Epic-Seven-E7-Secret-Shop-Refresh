@@ -64,7 +64,7 @@ class RefreshStatistic:
         self.refresh_count += 1
     
     def writeToCSV(self):
-        res_folder = 'ShopRefreshes'
+        res_folder = 'ShopRefreshHistory'
         if not os.path.exists(res_folder):
             os.makedirs(res_folder)
 
