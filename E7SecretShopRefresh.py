@@ -259,7 +259,7 @@ class SecretShopRefresh:
         hint.config(bg=bg_color)
 
         #Display stat
-        mini_stats = tk.Frame(master=hint)
+        mini_stats = tk.Frame(master=hint, bg=bg_color)
         mini_labels = []
         
         #packing mini image
