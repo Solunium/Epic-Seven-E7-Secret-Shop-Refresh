@@ -6,7 +6,6 @@ import time
 from PIL import Image
 import threading
 import cv2
-import pygetwindow as gw
 import numpy as np
 import keyboard
 
@@ -29,7 +28,7 @@ class E7Inventory:
         self.inventory[name] = newItem 
 
 class E7ADBShopRefresh:
-    def __init__(self, window_title:str, tap_sleep:float = 0.5, budget=None):
+    def __init__(self, tap_sleep:float = 0.5, budget=None):
         self.loop_active = False
         self.end_of_refresh = True
         self.tap_sleep = tap_sleep
@@ -46,11 +45,6 @@ class E7ADBShopRefresh:
         self.storage.addItem('mys.jpg', 'Mystic medal', 280000)
         #self.storage.addItem('fb.jpg', 'Friendship bookmark', 18000)
 
-        self.window_title = window_title
-        windows = gw.getWindowsWithTitle(window_title)
-        self.window = next((w for w in windows if w.title == window_title), None)
-
-
     def start(self):
         self.loop_active = True
         self.end_of_refresh = False
@@ -64,25 +58,12 @@ class E7ADBShopRefresh:
         print('Shop refresh terminated!\n')
 
     def refreshShop(self):
-        #resize emulator for template matching
-        try:
-            if self.window.isMaximized or self.window.isMinimized:
-                self.window.restore()
-            self.window.resizeTo(906, 539)
-
-        except Exception as e:
-            print(e)
-            self.loop_active = False
-            self.end_of_refresh = True
-            return
-        
         self.clickShop()
         #time needed for item to drop in after refresh
         sliding_time = 0.8
 
         #refresh loop
         while self.loop_active:
-            self.window.resizeTo(906, 539)
 
             time.sleep(sliding_time)
             brought = set()
@@ -227,21 +208,11 @@ if __name__ == '__main__':
     input('when you finish reading, press enter to continue!')
     print()
 
-    #select window
-    print('List of windows:\n')
-    titles = gw.getAllTitles()
-    for index, title in enumerate(titles):
-        if title != '':
-            print(index, title)
-    print()
-    selectTitle = input('Which window is your emulator on (type in the number):')
-    wintitle = titles[int(selectTitle)]
-    print('Selected:', wintitle)
     #settings
     try:
         tap_sleep = float(input('Tap sleep(in seconds) recommand 0.5: '))
     except:
-        print('invalid input, default to tap sleep of 1 second')
+        print('invalid input, default to tap sleep of 0.5 second')
         tap_sleep = 0.5
     try:
         budget = float(input('Amount of skystone that you want to spend:'))
@@ -251,7 +222,7 @@ if __name__ == '__main__':
     print()
     input('Press enter to start!')
     print('Press Esc to terminate anytime!')
-    ADBSHOP = E7ADBShopRefresh(window_title=wintitle, tap_sleep=tap_sleep, budget=budget)
+    ADBSHOP = E7ADBShopRefresh(tap_sleep=tap_sleep, budget=budget)
     ADBSHOP.start()
     print()
     input('press enter to exit...')
