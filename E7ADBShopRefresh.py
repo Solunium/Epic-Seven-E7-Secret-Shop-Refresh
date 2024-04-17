@@ -73,6 +73,7 @@ class E7ADBShopRefresh:
         except Exception as e:
             print(e)
             self.loop_active = False
+            self.end_of_refresh = True
             return
         
         self.clickShop()
