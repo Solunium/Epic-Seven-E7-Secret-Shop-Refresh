@@ -26,7 +26,7 @@ If you are using **GOOGLE PLAY BETA**, make sure **Desktop display resolution se
 **Step 7.** Press the "start refresh" button
 **- PRESS ESC KEY TO STOP THE PROGRAM**
 	
-You can check your refreshing history in the folder called **ShopRefreshes**
+You can check your refreshing history in the folder called **ShopRefreshHistory**
 
 ### Compile it yourself:
 **Step 1.** Install python
