@@ -24,7 +24,7 @@ class E7Inventory:
     def addItem(self, path:str, name='', price=0, count=0):
         image = cv2.imread(os.path.join('adb-assets', path))
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        newItem = E7Item(image, price=0, count=0)
+        newItem = E7Item(image, price, count)
         self.inventory[name] = newItem 
 
 class E7ADBShopRefresh:
