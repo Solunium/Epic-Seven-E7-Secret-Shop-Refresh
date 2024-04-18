@@ -45,6 +45,9 @@ pip install -r requirements.txt
 ```
 pyinstaller -F --hide-console hide-early -i assets/icon.ico E7SecretShopRefresh.py
 ```
+```
+pyinstaller -F -i adb-assets/icon.ico E7ADBShopRefresh.py
+```
 ## Settings
 It can be helpful to select the friendship bookmark to check if the program is detecting items correctly	
 
