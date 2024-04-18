@@ -17,47 +17,48 @@ import keyboard
 from PIL import ImageGrab
 
 class ShopItem:
-    def __init__(self, path:str, name='', price=0, count=0):
+    def __init__(self, path='', image=None, price=0, count=0):
         self.path=path
-        self.name=name
+        self.image=image
         self.price=price
         self.count=count
 
     def __repr__(self):
-        return f'ShopItem(name={self.name}, path={self.path}, price={self.price}, count={self.count})'
+        return f'ShopItem(path={self.path}, image={self.image}, price={self.price}, count={self.count})'
 
 class RefreshStatistic:
     def __init__(self):
         self.refresh_count = 0
-        self.items = []
+        self.items = {}
         
     def addShopItem(self, path: str, name='', price=0, count=0):
-        new_shop_item = ShopItem(path, name, price, count)
-        self.items.append(new_shop_item)
-
-    def incrementItemCountOnIndex(self, index: int):
-        self.items[index].count += 1
-        return
+        image = cv2.imread(os.path.join('assets', path))
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        newItem = ShopItem(path, image, price, count)
+        self.items[name] = newItem
     
+    def getInventory(self):
+        return self.items
+
     def getName(self):
-        return [item.name for item in self.items]
+        return list(self.items.keys())
 
     def getPath(self):
-        return [item.path for item in self.items]
-    
-    def getPrice(self):
-        return [item.price for item in self.items]
-    
-    def getPathAndPrice(self):
-        return zip(self.getPath(), self.getPrice())
+        res = []
+        for value in self.items.values():
+            res.append(value.path)
+        return res
     
     def getItemCount(self):
-        return [item.count for item in self.items]
+        res = []
+        for value in self.items.values():
+            res.append(value.count)
+        return res
     
     def getTotalCost(self):
         total = 0
-        for item in self.items:
-            total += item.count * item.price
+        for value in self.items.values():
+            total += value.price * value.count
         return total
     
     def incrementRefreshCount(self):
@@ -91,7 +92,6 @@ class SecretShopRefresh:
     def __init__(self, title_name: str, callback = None, tk_instance: tk = None, budget: int = None, allow_move: bool = False, debug: bool = False):
         #init state
         self.debug = debug
-        self.asset_image = []
         self.loop_active = False
         self.loop_finish = True
         self.mouse_sleep = 0.2
@@ -116,7 +116,6 @@ class SecretShopRefresh:
         if self.loop_active or not self.loop_finish:
             return
         
-        self.processAsset()
         self.loop_active = True
         self.loop_finish = False 
         keyboard_thread = threading.Thread(target=self.checkKeyPress)
@@ -137,7 +136,6 @@ class SecretShopRefresh:
         print('Terminated!')
 
     def shopRefreshLoop(self):
-        length = len(self.asset_image)
         
         try:
             if self.window.isMaximized or self.window.isMinimized:
@@ -196,13 +194,46 @@ class SecretShopRefresh:
                 self.window.resizeTo(906, 539)
                 
                 #array for determining if an item has been purchsed in this loop
-                purchased = [False for _ in range(length)]
+                brought = set()
                 if not self.loop_active: break
 
                 #take screenshot, check for items, buy all items that appear
                 time.sleep(sliding_time)    #This is a constant sleep to account for the item sliding in frame
-                if not self.clickBuyBundle(purchased): break
                 
+                ###start of bundle refresh
+                screenshot = self.takeScreenshot()
+                process_screenshot = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
+
+                #show image if in debug
+                if self.debug:
+                    cv2.imshow('Press any key to continue ...', process_screenshot)
+                    cv2.waitKey(0)
+                    cv2.destroyAllWindows()
+
+                #checks if loading screen is blocking
+                check_screen, reset = self.checkLoading(process_screenshot)
+                if check_screen is None:
+                    break      
+                else:
+                    process_screenshot = check_screen
+
+                if reset:
+                    x = self.window.left + self.window.width * 0.04
+                    y = self.window.top + self.window.height * 0.10
+                    pyautogui.moveTo(x, y)
+                    pyautogui.click()
+                    time.sleep(1)
+                    self.clickShop()
+                    continue
+                
+                #loop through all the assets to find item to buy
+                for key, value in self.rs_instance.getInventory().items():
+                    pos = self.findItemPosition(process_screenshot, value.image)
+                    if pos is not None:
+                        self.clickBuy(pos)
+                        value.count += 1
+                        brought.add(key)
+
                 #real time count UI update
                 if hint: updateMiniDisplay()
                 if not self.loop_active: break
@@ -212,8 +243,44 @@ class SecretShopRefresh:
                 time.sleep(self.mouse_sleep)
                 if not self.loop_active: break
 
-                #take screenshot, check for items, buy all items that appear, update real time count UI if needed
-                if not self.clickBuyBundle(purchased): break
+                ###start of bundle refresh
+                screenshot = self.takeScreenshot()
+                process_screenshot = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
+
+                #show image if in debug
+                if self.debug:
+                    cv2.imshow('Press any key to continue ...', process_screenshot)
+                    cv2.waitKey(0)
+                    cv2.destroyAllWindows()
+
+                #checks if loading screen is blocking
+                check_screen, reset = self.checkLoading(process_screenshot)
+                if check_screen is None:
+                    break      
+                else:
+                    process_screenshot = check_screen
+
+                if reset:
+                    for key in brought:
+                        value = self.rs_instance.items.get(key)
+                        if value:
+                            value.count -= 1
+
+                    x = self.window.left + self.window.width * 0.04
+                    y = self.window.top + self.window.height * 0.10
+                    pyautogui.moveTo(x, y)
+                    pyautogui.click()
+                    time.sleep(1)
+                    self.clickShop()
+                    continue
+                
+                #loop through all the assets to find item to buy
+                for key, value in self.rs_instance.getInventory().items():
+                    pos = self.findItemPosition(process_screenshot, value.image)
+                    if pos is not None and key not in brought:
+                        self.clickBuy(pos)
+                        value.count += 1
+
                 if hint: updateMiniDisplay()
                 if not self.loop_active: break
                 
@@ -277,15 +344,6 @@ class SecretShopRefresh:
     def addShopItem(self, path: str, name='', price=0, count=0):
         self.rs_instance.addShopItem(path, name, price, count)
 
-    #store assets in memory
-    def processAsset(self):
-        res = []
-        for item_path in self.rs_instance.getPath():
-            item = cv2.imread(os.path.join('assets', item_path))
-            item = cv2.cvtColor(item, cv2.COLOR_BGR2GRAY)
-            res.append(item) 
-        self.asset_image = res
-
     #take screenshot of entire window
     def takeScreenshot(self):
         try:
@@ -310,7 +368,7 @@ class SecretShopRefresh:
         result = cv2.matchTemplate(process_screenshot, self.loading_asset, cv2.TM_CCOEFF_NORMED)
         loc = np.where(result >= 0.75)
         if loc[0].size <= 0:
-            return process_screenshot
+            return process_screenshot, False
         
         for _ in range(14):
             time.sleep(1)
@@ -322,9 +380,9 @@ class SecretShopRefresh:
                 time.sleep(1.5)
                 screenshot = self.takeScreenshot()
                 process_screenshot = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
-                return process_screenshot
+                return process_screenshot, True
 
-        return None
+        return None, False
 
     #return item position
     def findItemPosition(self, process_screenshot, process_item):
@@ -351,55 +409,23 @@ class SecretShopRefresh:
         return None
     
     #BUY MACRO
-    def clickBuyBundle(self, purchased):
-        
-        # #press cancel on dispatch mission
-        # pyautogui.moveTo(self.window.left + self.window.width * 0.55, self.window.top + self.window.height * 0.80)
-        # pyautogui.click()
-
-        screenshot = self.takeScreenshot()
-        process_screenshot = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
-
-        #checks if loading screen is blocking
-        check_screen = self.checkLoading(process_screenshot)
-        if check_screen is None:
-            return False      
-        else:
-            process_screenshot = check_screen
-
-        if self.debug:
-            cv2.imshow('Press any key to continue ...', process_screenshot)
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
-
-        for index, image in enumerate(self.asset_image):
-            if not self.loop_active: break
-
-            if purchased[index]:
-                continue
-            else:
-                purchased[index] = self.clickBuy(self.findItemPosition(process_screenshot, image), index)
-                time.sleep(self.mouse_sleep)
-        return True
-
-    def clickBuy(self, pos, index):
+    def clickBuy(self, pos):
         if pos is None:
             return False
         x, y = pos
         pyautogui.moveTo(x, y)
         pyautogui.click(clicks=2, interval=self.mouse_sleep)
         time.sleep(self.mouse_sleep)
-        self.clickConfirmBuy(index)
+        self.clickConfirmBuy()
         return True
 
-    def clickConfirmBuy(self, index):
+    def clickConfirmBuy(self):
         x = self.window.left + self.window.width * 0.55
         y = self.window.top + self.window.height * 0.70
         pyautogui.moveTo(x, y)
         pyautogui.click(clicks=2, interval=self.mouse_sleep)
         time.sleep(self.mouse_sleep)
         time.sleep(self.screenshot_sleep)   #Account for Loading
-        self.rs_instance.incrementItemCountOnIndex(index)
 
         #checks if loading screen is blocking
         screenshot = self.takeScreenshot()
@@ -712,6 +738,7 @@ class AutoRefreshGUI:
             self.ssr.budget = int(self.limit_spend_entry.get())
 
         print('refresh shop start!')
+        print('Budget:', self.ssr.budget)
         print('Mouse speed:', self.ssr.mouse_sleep)
         print('Screenshot speed', self.ssr.screenshot_sleep)
         
