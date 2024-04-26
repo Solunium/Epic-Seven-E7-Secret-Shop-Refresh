@@ -76,6 +76,8 @@ If you are using **GOOGLE PLAY BETA**, make sure **Desktop display resolution se
 **PRESS ESC KEY TO STOP THE PROGRAM**
 
 **Always make sure that the program recognize the covenant/mystic bookmark before letting it run unsupervised**
+
+**If you encounter a problem, feel free to open a issue on github!**
 	
 You can check your refreshing history in the folder called **ShopRefreshHistory**
 
@@ -93,6 +95,9 @@ You can check your refreshing history in the folder called **ShopRefreshHistory*
 
 **step 4.** Turn on **ADB** (Android Debug bridge) on your emulator
 
+Google play beta user needs to download **Google Play Games on PC Developer Emulator**, then allow debug when prompted in home screen. 
+Unfortunately, **Epic Seven needs to be redownloaded**. Go with the mouse option, if you don't want to go through the trouble
+
 **step 5.** Change ingame resolution to **1080 x 1920**
 
 **step 6.** Launch **E7ADBShopRefresh** in the folder that you just extracted
@@ -103,7 +108,9 @@ You can check your refreshing history in the folder called **ShopRefreshHistory*
 
 **Always make sure that the program recognize the covenant/mystic bookmark before letting it run unsupervised**
 
-**One way to test the program is to manual refresh till covenant/mystic bookmark show up, then run the program to see if it brought the item**
+**One way to test the program is to manual refresh till covenant/mystic bookmark show up, then run the program to see if it brought**
+
+You can check your refreshing history in the folder called **ShopRefreshHistory**
 
 <br>
 
