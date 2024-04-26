@@ -218,12 +218,14 @@ class SecretShopRefresh:
                     process_screenshot = check_screen
 
                 if reset:
-                    x = self.window.left + self.window.width * 0.04
-                    y = self.window.top + self.window.height * 0.10
-                    pyautogui.moveTo(x, y)
-                    pyautogui.click()
-                    time.sleep(1)
-                    self.clickShop()
+                    # x = self.window.left + self.window.width * 0.04
+                    # y = self.window.top + self.window.height * 0.10
+                    # pyautogui.moveTo(x, y)
+                    # pyautogui.click()
+                    # time.sleep(1)
+                    # self.clickShop()
+                    self.scrollUp()
+                    time.sleep(0.5)
                     continue
                 
                 #loop through all the assets to find item to buy
@@ -266,12 +268,14 @@ class SecretShopRefresh:
                         if value:
                             value.count -= 1
 
-                    x = self.window.left + self.window.width * 0.04
-                    y = self.window.top + self.window.height * 0.10
-                    pyautogui.moveTo(x, y)
-                    pyautogui.click()
-                    time.sleep(1)
-                    self.clickShop()
+                    # x = self.window.left + self.window.width * 0.04
+                    # y = self.window.top + self.window.height * 0.10
+                    # pyautogui.moveTo(x, y)
+                    # pyautogui.click()
+                    # time.sleep(1)
+                    # self.clickShop()
+                    self.scrollUp()
+                    time.sleep(0.5)
                     continue
                 
                 #loop through all the assets to find item to buy
@@ -479,7 +483,14 @@ class SecretShopRefresh:
         pyautogui.mouseDown(button='left')
         pyautogui.moveTo(x, y-self.window.height*0.28)
         pyautogui.mouseUp(button='left')
-
+    
+    def scrollUp(self):
+        x = self.window.left + self.window.width * 0.58
+        y = self.window.top + self.window.height * 0.62
+        pyautogui.moveTo(x, y-self.window.height*0.28)
+        pyautogui.mouseDown(button='left')
+        pyautogui.moveTo(x, y)
+        pyautogui.mouseUp(button='left')
 
 class AppConfig():
     def __init__(self):
@@ -751,7 +762,6 @@ class AutoRefreshGUI:
             print(f'mys: {ev_mys}')
         print()
         
-
         self.ssr.start()
 
 if __name__ == '__main__':
