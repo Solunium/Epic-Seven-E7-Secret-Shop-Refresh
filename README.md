@@ -48,6 +48,7 @@ Cons:
 <br>
 
 ### Quick Start (Mouse):
+
 **Step 1.** Download the [latest release](https://github.com/sya1999/Epic-Seven-Secret-Shop-Refresh/releases) make sure to download (**E7 Secret Shop Refresh.zip**)
 
 **Step 2.** Extract the zip file to any directory
@@ -79,6 +80,7 @@ You can check your refreshing history in the folder called **ShopRefreshHistory*
 <br>
 
 ### Quick Start (Android Debug Bridge):
+
 **Step 1.** Download the [latest release](https://github.com/sya1999/Epic-Seven-Secret-Shop-Refresh/releases) make sure to download (**E7 Secret Shop Refresh.zip**)
 
 **Step 2.** Extract the zip file to any directory
