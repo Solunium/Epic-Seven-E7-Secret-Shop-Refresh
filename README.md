@@ -39,7 +39,7 @@ Cons:
 
 - need to set ingame resolution to be 1080 x 1920
 
-[Click Here to jump to ADB section]()
+[Click Here to jump to ADB section](https://github.com/Solunium/Epic-Seven-E7-Secret-Shop-Refresh/blob/main/README.md#quick-start-android-debug-bridge)
 
 
 ### Quick Start (Mouse):
