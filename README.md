@@ -23,7 +23,7 @@ Cons:
 
 - Google Play Beta user might need to change desktop display setting to 1920 x 1080
 
-[Click Here to jump to Mouse section]([https://github.com/Solunium/Epic-Seven-E7-Secret-Shop-Refresh/tree/main?tab=readme-ov-file#quick-start-mouse])
+[Click Here to jump to Mouse section](https://github.com/Solunium/Epic-Seven-E7-Secret-Shop-Refresh/tree/main?tab=readme-ov-file#quick-start-mouse)
 
 <br>
 
