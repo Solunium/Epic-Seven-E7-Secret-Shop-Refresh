@@ -44,7 +44,6 @@ Cons:
 [Click Here to jump to ADB section](https://github.com/Solunium/Epic-Seven-E7-Secret-Shop-Refresh/blob/main/README.md#quick-start-android-debug-bridge)
 
 <br>
-<br>
 
 ### Quick Start (Mouse):
 **Step 1.** Download the [latest release](https://github.com/sya1999/Epic-Seven-Secret-Shop-Refresh/releases) make sure to download (**E7 Secret Shop Refresh.zip**)
@@ -76,7 +75,6 @@ If you are using **GOOGLE PLAY BETA**, make sure **Desktop display resolution se
 You can check your refreshing history in the folder called **ShopRefreshHistory**
 
 <br>
-<br>
 
 ### Quick Start (Android Debug Bridge):
 **Step 1.** Download the [latest release](https://github.com/sya1999/Epic-Seven-Secret-Shop-Refresh/releases) make sure to download (**E7 Secret Shop Refresh.zip**)
@@ -99,6 +97,8 @@ You can check your refreshing history in the folder called **ShopRefreshHistory*
 
 **One way to test the program is to manual refresh till covenant/mystic bookmark show up, then run the program to see if it brought the item**
 
+<br>
+
 ### Compile it yourself:
 **Step 1.** Install python
 
@@ -119,6 +119,9 @@ pyinstaller -F --hide-console hide-early -i assets/icon.ico E7SecretShopRefresh.
 ```
 pyinstaller -F -i adb-assets/icon.ico E7ADBShopRefresh.py
 ```
+
+<br>
+
 ## Settings
 It can be helpful to select the friendship bookmark to check if the program is detecting items correctly	
 
