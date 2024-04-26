@@ -41,7 +41,7 @@ Cons:
 
 - Runs 2 times slower than mouse
 
-- need to set ingame resolution to be 1080 x 1920
+- need to set ingame resolution to be 1920 x 1080
 
 [Click Here to jump to ADB section](https://github.com/Solunium/Epic-Seven-E7-Secret-Shop-Refresh/tree/main?tab=readme-ov-file#quick-start-android-debug-bridge)
 
@@ -98,7 +98,7 @@ You can check your refreshing history in the folder called **ShopRefreshHistory*
 Google play beta user needs to download **Google Play Games on PC Developer Emulator**, then allow debug when prompted in home screen. 
 Unfortunately, **Epic Seven needs to be redownloaded**. Go with the mouse option, if you don't want to go through the trouble
 
-**step 5.** Change ingame resolution to **1080 x 1920**
+**step 5.** Change emulator's resolution to **1920 x 1080**
 
 **step 6.** Launch **E7ADBShopRefresh** in the folder that you just extracted
 
