@@ -2,7 +2,55 @@
 ## Showcase
 ![](https://github.com/sya1999/Epic-Seven-Secret-Shop-Refresh/blob/main/assets/E7.gif)
 ## Getting Started
-### Quick Start:
+### MOUSE vs ADB
+There are two different ways to run auto shop refresh, either through controlling host mouse or send in debug command to emulator
+
+<br>
+
+**Mouse**
+
+Pros:
+
+- Compatible with all emulator
+
+- Fastest way to refresh shop 
+
+Cons:
+
+- Can't use mouse while the application is running
+
+- Emulator needs to stay on screen
+
+- Google Play Beta user might need to change desktop display setting to 1920 x 1080
+
+[Click Here to jump to Mouse section](https://github.com/Solunium/Epic-Seven-E7-Secret-Shop-Refresh/tree/main?tab=readme-ov-file#quick-start-mouse)
+
+<br>
+
+**ADB**
+
+Pros:
+
+- Mouse is free to do whatever
+
+- you can minimize the emulator window 
+
+Cons:
+
+- Requires emulator to have ADB 
+
+- Runs 2 times slower than mouse
+
+- need to set ingame resolution to be 1920 x 1080
+
+[Click Here to jump to ADB section](https://github.com/Solunium/Epic-Seven-E7-Secret-Shop-Refresh/tree/main?tab=readme-ov-file#quick-start-android-debug-bridge)
+
+<br>
+
+### Quick Start (Mouse):
+
+<br>
+
 **Step 1.** Download the [latest release](https://github.com/sya1999/Epic-Seven-Secret-Shop-Refresh/releases) make sure to download (**E7 Secret Shop Refresh.zip**)
 
 **Step 2.** Extract the zip file to any directory
@@ -24,9 +72,47 @@ If you are using **GOOGLE PLAY BETA** with DUAL MONITOR, untick auto placement s
 If you are using **GOOGLE PLAY BETA**, make sure **Desktop display resolution setting is 1920 x 1080**, so that it resize properly  
 
 **Step 7.** Press the "start refresh" button
-**- PRESS ESC KEY TO STOP THE PROGRAM**
+
+**PRESS ESC KEY TO STOP THE PROGRAM**
+
+**Always make sure that the program recognize the covenant/mystic bookmark before letting it run unsupervised**
+
+**If you encounter a problem, feel free to open a issue on github!**
 	
 You can check your refreshing history in the folder called **ShopRefreshHistory**
+
+<br>
+
+### Quick Start (Android Debug Bridge):
+
+<br>
+
+**Step 1.** Download the [latest release](https://github.com/sya1999/Epic-Seven-Secret-Shop-Refresh/releases) make sure to download (**E7 Secret Shop Refresh.zip**)
+
+**Step 2.** Extract the zip file to any directory
+
+**Step 3.** Launch Epic Seven on your emulator, make sure to close dispatch mission and news
+
+**step 4.** Turn on **ADB** (Android Debug bridge) on your emulator
+
+Google play beta user needs to download **Google Play Games on PC Developer Emulator**, then allow debug when prompted in home screen. 
+Unfortunately, **Epic Seven needs to be redownloaded**. Go with the mouse option, if you don't want to go through the trouble
+
+**step 5.** Change emulator's resolution to **1920 x 1080**
+
+**step 6.** Launch **E7ADBShopRefresh** in the folder that you just extracted
+
+**step 7.** Follow the instruction show in the command line, and press enter to start
+
+**PRESS ESC KEY TO STOP THE PROGRAM**
+
+**Always make sure that the program recognize the covenant/mystic bookmark before letting it run unsupervised**
+
+**One way to test the program is to manual refresh till covenant/mystic bookmark show up, then run the program to see if it brought**
+
+You can check your refreshing history in the folder called **ShopRefreshHistory**
+
+<br>
 
 ### Compile it yourself:
 **Step 1.** Install python
@@ -48,6 +134,9 @@ pyinstaller -F --hide-console hide-early -i assets/icon.ico E7SecretShopRefresh.
 ```
 pyinstaller -F -i adb-assets/icon.ico E7ADBShopRefresh.py
 ```
+
+<br>
+
 ## Settings
 It can be helpful to select the friendship bookmark to check if the program is detecting items correctly	
 
