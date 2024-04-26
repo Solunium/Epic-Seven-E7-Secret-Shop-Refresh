@@ -79,7 +79,7 @@ class RefreshStatistic:
         if not os.path.isfile(path):
             with open(path, 'w', newline='') as file:
                 writer = csv.writer(file)
-                column_name = ['Time', 'Refresh count', 'Skystone spend', 'Gold spend']
+                column_name = ['Time', 'Refresh count', 'Skystone spent', 'Gold spent']
                 column_name.extend(self.getName())
                 writer.writerow(column_name)
         with open(path, 'a', newline='') as file:
@@ -741,6 +741,15 @@ class AutoRefreshGUI:
         print('Budget:', self.ssr.budget)
         print('Mouse speed:', self.ssr.mouse_sleep)
         print('Screenshot speed', self.ssr.screenshot_sleep)
+        if self.ssr.budget and self.ssr.budget >= 1000:
+            ev_cost = 1691.04536 * int(self.ssr.budget) * 2
+            ev_cov = 0.006602509 * int(self.ssr.budget) * 2
+            ev_mys = 0.001700646 * int(self.ssr.budget) * 2
+            print('Approximation based on budget:')
+            print(f'Cost: {int(ev_cost):,}')
+            print(f'Cov: {ev_cov}')
+            print(f'mys: {ev_mys}')
+        print()
         
 
         self.ssr.start()
