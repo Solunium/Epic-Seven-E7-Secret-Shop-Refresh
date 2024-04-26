@@ -85,8 +85,8 @@ class E7ADBShopRefresh:
         self.keyboard_thread = threading.Thread(target=self.checkKeyPress)
         self.adb_path = os.path.join('adb-assets','platform-tools', 'adb')
         self.storage = E7Inventory()
-        self.screenwidth = 1080
-        self.screenheight = 1920
+        self.screenwidth = 1920
+        self.screenheight = 1080
         self.updateScreenDimension()
 
         self.storage.addItem('cov.jpg', 'Covenant bookmark', 184000)
@@ -114,9 +114,9 @@ class E7ADBShopRefresh:
         start_time = time.time()
         milestone = self.budget//10
         #swipe location
-        x1 = str(1.111 * self.screenwidth)
-        y1 = str(0.365 * self.screenheight)
-        y2 = str(0.260 * self.screenheight)
+        x1 = str(0.6250 * self.screenwidth)
+        y1 = str(0.6481 * self.screenheight)
+        y2 = str(0.4629 * self.screenheight)
         #refresh loop
         while self.loop_active:
 
@@ -183,7 +183,7 @@ class E7ADBShopRefresh:
         byte_image = BytesIO(adb_process.stdout)
         pil_image = Image.open(byte_image)
         pil_image = np.array(pil_image)
-        x, y, _ = pil_image.shape
+        y, x, _ = pil_image.shape
         self.screenwidth = x
         self.screenheight = y
 
@@ -205,8 +205,8 @@ class E7ADBShopRefresh:
         loc = np.where(result >= 0.75)
 
         if loc[0].size > 0:
-            x = loc[1][0] + self.screenwidth * 0.829
-            y = loc[0][0] + self.screenheight * 0.052
+            x = loc[1][0] + self.screenwidth * 0.4718
+            y = loc[0][0] + self.screenheight * 0.1000
             pos = (x, y)
             return pos
         return None
@@ -214,20 +214,20 @@ class E7ADBShopRefresh:
     #macro
     def clickShop(self):
         #newshop
-        x = self.screenwidth * 0.072
-        y = self.screenheight * 0.164
+        x = self.screenwidth * 0.0411
+        y = self.screenheight * 0.2935
         adb_process = subprocess.run([self.adb_path, 'shell', 'input', 'tap', str(x), str(y)])
         time.sleep(self.tap_sleep)
 
         #oldshop
-        x = self.screenwidth * 0.791
-        y = self.screenheight * 0.134
+        x = self.screenwidth * 0.4406
+        y = self.screenheight * 0.2462
         adb_process = subprocess.run([self.adb_path, 'shell', 'input', 'tap', str(x), str(y)])
         time.sleep(self.tap_sleep)
 
         #newshop
-        x = self.screenwidth * 0.072
-        y = self.screenheight * 0.164
+        x = self.screenwidth * 0.0411
+        y = self.screenheight * 0.2935
         adb_process = subprocess.run([self.adb_path, 'shell', 'input', 'tap', str(x), str(y)])
         time.sleep(self.tap_sleep)
 
@@ -240,22 +240,22 @@ class E7ADBShopRefresh:
         time.sleep(self.tap_sleep)
 
         #confirm
-        x = self.screenwidth * 0.997
-        y = self.screenheight * 0.394
+        x = self.screenwidth * 0.5677
+        y = self.screenheight * 0.7037
         adb_process = subprocess.run([self.adb_path, 'shell', 'input', 'tap', str(x), str(y)])
         time.sleep(self.tap_sleep)
         time.sleep(0.5)
     
     def clickRefresh(self):
-        x = self.screenwidth * 0.302
-        y = self.screenheight * 0.514
+        x = self.screenwidth * 0.1698
+        y = self.screenheight * 0.9138
         adb_process = subprocess.run([self.adb_path, 'shell', 'input', 'tap', str(x), str(y)])
         time.sleep(self.tap_sleep)
 
         if not self.loop_active: return
         #confirm
-        x = self.screenwidth * 1.031
-        y = self.screenheight * 0.343
+        x = self.screenwidth * 0.5828
+        y = self.screenheight * 0.6111
         adb_process = subprocess.run([self.adb_path, 'shell', 'input', 'tap', str(x), str(y)])
         time.sleep(self.tap_sleep)
 
@@ -266,7 +266,7 @@ if __name__ == '__main__':
     print('Epic Seven Shop Refresh with ADB')
     print('Before launching this application')
     print('Make sure Epic Seven is opened and that ADB is turned on')
-    print('Ingame resolution should be set to 1080 x 1920')
+    print('Ingame resolution should be set to 1920 x 1080')
     print('(relaunch this application if the above conditions are not met)')
     print()
     input('when you finish reading, press enter to continue!')
