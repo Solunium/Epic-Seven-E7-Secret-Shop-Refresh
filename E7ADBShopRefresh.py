@@ -2,6 +2,7 @@ import subprocess
 import os
 from io import BytesIO
 import time
+import csv
 
 from PIL import Image
 import threading
@@ -14,6 +15,7 @@ class E7Item:
         self.image=image
         self.price=price
         self.count=count
+
     def __repr__(self):
         return f'ShopItem(image={self.image}, price={self.price}, count={self.count})'
 
@@ -25,7 +27,53 @@ class E7Inventory:
         image = cv2.imread(os.path.join('adb-assets', path))
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         newItem = E7Item(image, price, count)
-        self.inventory[name] = newItem 
+        self.inventory[name] = newItem
+
+    def getStatusString(self):
+        status_string = ''
+        for key, value in self.inventory.items():
+            status_string += key[0:4] + ': ' + str(value.count) + ' '
+        return status_string
+
+    def getName(self):
+        res = []
+        for key in self.inventory.keys():
+            res.append(key)
+        return res
+    
+    def getCount(self):
+        res = []
+        for value in self.inventory.values():
+            res.append(value.count)
+        return res
+    
+    def getTotalCost(self):
+        sum = 0
+        for value in self.inventory.values():
+            sum += value.price * value.count
+        return sum
+
+    def writeToCSV(self, duration, skystone_spent):
+        duration = round(duration, 2)
+
+        res_folder = 'ShopRefreshHistory'
+        if not os.path.exists(res_folder):
+            os.makedirs(res_folder)
+
+        history_file = 'ADB_History.csv'
+
+        path = os.path.join(res_folder, history_file)
+        if not os.path.isfile(path):
+            with open(path, 'w', newline='') as file:
+                writer = csv.writer(file)
+                column_name = ['Duration', 'Skystone spent', 'Gold spent']
+                column_name.extend(self.getName())
+                writer.writerow(column_name)
+        with open(path, 'a', newline='') as file:
+            writer = csv.writer(file)
+            data = [duration, skystone_spent, self.getTotalCost()]
+            data.extend(self.getCount())
+            writer.writerow(data)
 
 class E7ADBShopRefresh:
     def __init__(self, tap_sleep:float = 0.5, budget=None):
@@ -55,13 +103,20 @@ class E7ADBShopRefresh:
     def checkKeyPress(self):
         while(self.loop_active and not self.end_of_refresh):
             self.loop_active = not keyboard.is_pressed('esc')
-        print('Shop refresh terminated!\n')
+        self.loop_active = False
+        print('Shop refresh terminated!')
 
     def refreshShop(self):
         self.clickShop()
-        #time needed for item to drop in after refresh
-        sliding_time = 0.8
-
+        #time needed for item to drop in after refresh (0.8)
+        sliding_time = 1
+        #stat track
+        start_time = time.time()
+        milestone = self.budget//10
+        #swipe location
+        x1 = str(1.111 * self.screenwidth)
+        y1 = str(0.365 * self.screenheight)
+        y2 = str(0.260 * self.screenheight)
         #refresh loop
         while self.loop_active:
 
@@ -81,9 +136,6 @@ class E7ADBShopRefresh:
 
             if not self.loop_active: break
             #swipe
-            x1 = str(1.111 * self.screenwidth)
-            y1 = str(0.365 * self.screenheight)
-            y2 = str(0.260 * self.screenheight)
             adb_process = subprocess.run([self.adb_path, 'shell', 'input', 'swipe', x1, y1, x1, y2])
             #wait for action to complete
             time.sleep(0.5)
@@ -97,6 +149,13 @@ class E7ADBShopRefresh:
                     self.clickBuy(pos)
                     value.count += 1
 
+            #print every 10% progress
+            if self.budget >= 30 and self.refresh_count*3 >= milestone:
+                clear = ' ' * 30
+                print(clear, end='\r')
+                print(f'{int(milestone/self.budget*100)}% {self.storage.getStatusString()}', end='\r')
+                milestone += self.budget//10
+            
             if not self.loop_active: break
             if self.budget:
                 if self.refresh_count >= self.budget//3:
@@ -107,11 +166,14 @@ class E7ADBShopRefresh:
         
         self.end_of_refresh = True
         self.loop_active = False
+        if self.refresh_count*3 != self.budget: print('100%') 
+        duration = time.time()-start_time
+        self.storage.writeToCSV(duration=duration, skystone_spent=self.refresh_count*3)
         self.printResult()
     
     #helper function
     def printResult(self):
-        print('---Result---')
+        print('\n---Result---')
         for key, value in self.storage.inventory.items():
             print(key, ':', value.count)
         print('Skystone spent:', self.refresh_count*3)
@@ -182,6 +244,7 @@ class E7ADBShopRefresh:
         y = self.screenheight * 0.394
         adb_process = subprocess.run([self.adb_path, 'shell', 'input', 'tap', str(x), str(y)])
         time.sleep(self.tap_sleep)
+        time.sleep(0.5)
     
     def clickRefresh(self):
         x = self.screenwidth * 0.302
@@ -221,8 +284,19 @@ if __name__ == '__main__':
         print('invalid input, default to 1000 skystone budget')
         budget = 1000
     print()
+    if budget >= 1000:
+            ev_cost = 1691.04536 * int(budget) * 2
+            ev_cov = 0.006602509 * int(budget) * 2
+            ev_mys = 0.001700646 * int(budget) * 2
+            print('Approximation(EV) based on current budget:')
+            print(f'Cost: {int(ev_cost):,} (make sure you have at least this much gold)')
+            print(f'Cov: {ev_cov:.1f}')
+            print(f'mys: {ev_mys:.1f}')
+            print()
     input('Press enter to start!')
     print('Press Esc to terminate anytime!')
+    print()
+    print('Progress:')
     ADBSHOP = E7ADBShopRefresh(tap_sleep=tap_sleep, budget=budget)
     ADBSHOP.start()
     print()
