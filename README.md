@@ -5,7 +5,8 @@
 ### MOUSE vs ADB
 There are two different ways to run auto shop refresh, either through controlling host mouse or send in debug command to emulator
 
-\
+<br>
+
 **Mouse**
 
 Pros:
@@ -22,7 +23,8 @@ Cons:
 
 - Google Play Beta user might need to change desktop display setting to 1920 x 1080
 
-\
+<br>
+
 **ADB**
 
 Pros:
@@ -41,6 +43,8 @@ Cons:
 
 [Click Here to jump to ADB section](https://github.com/Solunium/Epic-Seven-E7-Secret-Shop-Refresh/blob/main/README.md#quick-start-android-debug-bridge)
 
+<br>
+<br>
 
 ### Quick Start (Mouse):
 **Step 1.** Download the [latest release](https://github.com/sya1999/Epic-Seven-Secret-Shop-Refresh/releases) make sure to download (**E7 Secret Shop Refresh.zip**)
@@ -70,6 +74,9 @@ If you are using **GOOGLE PLAY BETA**, make sure **Desktop display resolution se
 **Always make sure that the program recognize the covenant/mystic bookmark before letting it run unsupervised**
 	
 You can check your refreshing history in the folder called **ShopRefreshHistory**
+
+<br>
+<br>
 
 ### Quick Start (Android Debug Bridge):
 **Step 1.** Download the [latest release](https://github.com/sya1999/Epic-Seven-Secret-Shop-Refresh/releases) make sure to download (**E7 Secret Shop Refresh.zip**)
