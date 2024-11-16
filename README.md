@@ -5,6 +5,12 @@
 ### MOUSE vs ADB
 There are two different ways to run auto shop refresh, either through controlling host mouse or send in debug command to emulator
 
+### PC Client (New!)
+If you are using the program with the new PC Client, then you need to run the program with administrator privileges.
+This is not necessary when you are using an emulator.
+
+Keep in mind that this program was designed for use with an emulator, but it should still work in other environments. If any issues arise, please open a new issue in this repository.
+
 <br>
 
 **Mouse**
