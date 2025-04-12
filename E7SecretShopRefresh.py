@@ -447,7 +447,7 @@ class SecretShopRefresh:
 
     def clickConfirmRefresh(self):
         x = self.window.left + self.window.width * 0.58
-        y = self.window.top + self.window.height * 0.62
+        y = self.window.top + self.window.height * 0.65
         pyautogui.moveTo(x, y)
         pyautogui.click(clicks=2, interval=self.mouse_sleep)
         time.sleep(self.screenshot_sleep)   #Account for Loading
@@ -456,7 +456,7 @@ class SecretShopRefresh:
     def clickShop(self):
         #wake window
         x = self.window.left + self.window.width * 0.05
-        y = self.window.top + self.window.height * 0.32
+        y = self.window.top + self.window.height * 0.41
         pyautogui.moveTo(x, y)
         pyautogui.click()
 
@@ -472,7 +472,7 @@ class SecretShopRefresh:
 
         #new lobby
         x = self.window.left + self.window.width * 0.05
-        y = self.window.top + self.window.height * 0.32
+        y = self.window.top + self.window.height * 0.41
         pyautogui.moveTo(x, y)
         pyautogui.click()
 
@@ -499,7 +499,8 @@ class AppConfig():
         self.RECOGNIZE_TITLES = {'Epic Seven',
                                  'BlueStacks App Player',
                                  'LDPlayer',
-                                 'MuMu Player 12'}        #if detected title show up in the select bar so that you don't need to manual enter
+                                 'MuMu Player 12',
+                                 'Epic Seven : ORIGIN'}        #if detected title show up in the select bar so that you don't need to manual enter
         self.ALL_PATH = ['cov.jpg', 'mys.jpg', 'fb.jpg']        #Path to all the image
         self.ALL_NAME = ['Covenant bookmark','Mystic medal','Friendship bookmark']      #Name to all the image
         self.ALL_PRICE = [184000,280000,18000]      #Price to the image
