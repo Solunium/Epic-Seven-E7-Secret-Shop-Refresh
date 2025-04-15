@@ -121,7 +121,7 @@ You can check your refreshing history in the folder called **ShopRefreshHistory*
 <br>
 
 ### Compile it yourself:
-**Step 1.** Install python
+**Step 1.** Install python version 3.11.9
 
 **Step 2.** Git clone this repository to your directory
 
