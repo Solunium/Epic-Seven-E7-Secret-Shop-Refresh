@@ -3,16 +3,36 @@
 ![](https://github.com/sya1999/Epic-Seven-Secret-Shop-Refresh/blob/main/assets/E7.gif)
 ## Getting Started
 ### MOUSE vs ADB
-There are two different ways to run auto shop refresh, either through controlling host mouse or send in debug command to emulator
-
-### PC Client (New!)
-If you are using the program with the new PC Client, then you need to run the program with administrator privileges.
-This is not necessary when you are using an emulator.
-
-Keep in mind that this program was designed for use with an emulator, but it should still work in other environments. If any issues arise, please open a new issue in this repository.
+There are two different ways to run auto shop refresh, either through **controlling host mouse** or **send in debug command** to emulator
 
 <br>
 
+### Special Note (MUST READ!!!)
+1. If you are using the program with the **new PC Client**, then you need to **run the program with administrator privileges**
+
+(This is not necessary when you are using an emulator.)
+
+<br>
+
+2. When typing in the emulator/client's window title, **press 'Enter' key while in the textbox** to activate the start button
+
+(If the button is still grey-out, that means you typed the wrong window title, the name has to be exact down to the spacing)
+
+<br>
+
+3. Make sure the monitor is **TURNED ON AT ALL TIMES**, the program relies on the display to be active to take screenshot
+
+(By default, the mouse movement should keep the screen on, just don't power off the display maunally)
+
+<br>
+
+4. Make sure that the **program recognize the covenant/mystic bookmark before letting it run unsupervised**
+
+(you can manual refresh faster, so refresh till a bookmark show up, then start the program to see if it purchased)
+
+<br>
+
+### Refresh Options
 **Mouse**
 
 Pros:
