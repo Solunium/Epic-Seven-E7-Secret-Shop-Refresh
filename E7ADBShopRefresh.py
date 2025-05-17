@@ -1,5 +1,6 @@
 import subprocess
 import os
+import sys
 from io import BytesIO
 import time
 import csv
@@ -76,11 +77,13 @@ class E7Inventory:
             writer.writerow(data)
 
 class E7ADBShopRefresh:
-    def __init__(self, tap_sleep:float = 0.5, budget=None):
+    def __init__(self, tap_sleep:float = 0.5, budget=None, ip_port=None, debug=False):
         self.loop_active = False
         self.end_of_refresh = True
         self.tap_sleep = tap_sleep
         self.budget = budget
+        self.ip_port = ip_port
+        self.device_args = [] if ip_port is None else ['-s', ip_port]
         self.refresh_count = 0
         self.keyboard_thread = threading.Thread(target=self.checkKeyPress)
         self.adb_path = os.path.join('adb-assets','platform-tools', 'adb')
@@ -91,7 +94,8 @@ class E7ADBShopRefresh:
 
         self.storage.addItem('cov.jpg', 'Covenant bookmark', 184000)
         self.storage.addItem('mys.jpg', 'Mystic medal', 280000)
-        #self.storage.addItem('fb.jpg', 'Friendship bookmark', 18000)
+        if debug:
+            self.storage.addItem('fb.jpg', 'Friendship bookmark', 18000)
 
     def start(self):
         self.loop_active = True
@@ -115,8 +119,8 @@ class E7ADBShopRefresh:
         milestone = self.budget//10
         #swipe location
         x1 = str(0.6250 * self.screenwidth)
-        y1 = str(0.6481 * self.screenheight)
-        y2 = str(0.4629 * self.screenheight)
+        y1 = str(0.7481 * self.screenheight)
+        y2 = str(0.3629 * self.screenheight)
         #refresh loop
         while self.loop_active:
 
@@ -136,9 +140,9 @@ class E7ADBShopRefresh:
 
             if not self.loop_active: break
             #swipe
-            adb_process = subprocess.run([self.adb_path, 'shell', 'input', 'swipe', x1, y1, x1, y2])
+            adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'swipe', x1, y1, x1, y2])
             #wait for action to complete
-            time.sleep(0.5)
+            time.sleep(0.75)
 
             if not self.loop_active: break
             #look at shop (page 2)
@@ -151,9 +155,9 @@ class E7ADBShopRefresh:
 
             #print every 10% progress
             if self.budget >= 30 and self.refresh_count*3 >= milestone:
-                clear = ' ' * 30
-                print(clear, end='\r')
-                print(f'{int(milestone/self.budget*100)}% {self.storage.getStatusString()}', end='\r')
+                sys.stdout.write(' ' * 80 + '\r')
+                sys.stdout.write(f'{int(milestone/self.budget*100)}% {self.storage.getStatusString()}\r')
+                sys.stdout.flush()
                 milestone += self.budget//10
             
             if not self.loop_active: break
@@ -179,7 +183,7 @@ class E7ADBShopRefresh:
         print('Skystone spent:', self.refresh_count*3)
 
     def updateScreenDimension(self):
-        adb_process = subprocess.run([self.adb_path, 'exec-out', 'screencap','-p'], stdout=subprocess.PIPE)
+        adb_process = subprocess.run([self.adb_path] + self.device_args + ['exec-out', 'screencap','-p'], stdout=subprocess.PIPE)
         byte_image = BytesIO(adb_process.stdout)
         pil_image = Image.open(byte_image)
         pil_image = np.array(pil_image)
@@ -189,7 +193,7 @@ class E7ADBShopRefresh:
 
 
     def takeScreenshot(self):
-        adb_process = subprocess.run([self.adb_path, 'exec-out', 'screencap','-p'], stdout=subprocess.PIPE)
+        adb_process = subprocess.run([self.adb_path] + self.device_args + ['exec-out', 'screencap','-p'], stdout=subprocess.PIPE)
         byte_image = BytesIO(adb_process.stdout)
         pil_image = Image.open(byte_image)
         pil_image = np.array(pil_image)
@@ -215,20 +219,20 @@ class E7ADBShopRefresh:
     def clickShop(self):
         #newshop
         x = self.screenwidth * 0.0411
-        y = self.screenheight * 0.2935
-        adb_process = subprocess.run([self.adb_path, 'shell', 'input', 'tap', str(x), str(y)])
+        y = self.screenheight * 0.3835
+        adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'tap', str(x), str(y)])
         time.sleep(self.tap_sleep)
 
         #oldshop
         x = self.screenwidth * 0.4406
         y = self.screenheight * 0.2462
-        adb_process = subprocess.run([self.adb_path, 'shell', 'input', 'tap', str(x), str(y)])
+        adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'tap', str(x), str(y)])
         time.sleep(self.tap_sleep)
 
         #newshop
         x = self.screenwidth * 0.0411
-        y = self.screenheight * 0.2935
-        adb_process = subprocess.run([self.adb_path, 'shell', 'input', 'tap', str(x), str(y)])
+        y = self.screenheight * 0.3835
+        adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'tap', str(x), str(y)])
         time.sleep(self.tap_sleep)
 
     def clickBuy(self, pos):
@@ -236,29 +240,38 @@ class E7ADBShopRefresh:
             return False
         
         x, y = pos
-        adb_process = subprocess.run([self.adb_path, 'shell', 'input', 'tap', str(x), str(y)])
+        adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'tap', str(x), str(y)])
         time.sleep(self.tap_sleep)
 
         #confirm
         x = self.screenwidth * 0.5677
         y = self.screenheight * 0.7037
-        adb_process = subprocess.run([self.adb_path, 'shell', 'input', 'tap', str(x), str(y)])
+        adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'tap', str(x), str(y)])
         time.sleep(self.tap_sleep)
         time.sleep(0.5)
     
     def clickRefresh(self):
         x = self.screenwidth * 0.1698
         y = self.screenheight * 0.9138
-        adb_process = subprocess.run([self.adb_path, 'shell', 'input', 'tap', str(x), str(y)])
+        adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'tap', str(x), str(y)])
         time.sleep(self.tap_sleep)
 
         if not self.loop_active: return
         #confirm
         x = self.screenwidth * 0.5828
-        y = self.screenheight * 0.6111
-        adb_process = subprocess.run([self.adb_path, 'shell', 'input', 'tap', str(x), str(y)])
+        y = self.screenheight * 0.6411
+        adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'tap', str(x), str(y)])
         time.sleep(self.tap_sleep)
 
+def getDevices(print_output):
+        check_devices = subprocess.run([adb_path, 'devices'], capture_output=True, text=True)
+        if print_output: print(check_devices.stdout)
+        lines = check_devices.stdout.splitlines()
+        devices = []
+        for line in lines[1:-1]:
+            seq = line.split('\t')
+            devices.append(seq[0])
+        return devices
 
 if __name__ == '__main__':
 
@@ -269,17 +282,58 @@ if __name__ == '__main__':
     print('Ingame resolution should be set to 1920 x 1080')
     print('(relaunch this application if the above conditions are not met)')
     print()
+    print('It is normal for adb to take a few second to respond')
     input('when you finish reading, press enter to continue!')
+
     print()
 
-    #settings
+    if not os.path.isdir(os.path.join('adb-assets')):
+        print('adb-assets folder is missing!')
+        input('Press enter to exit ...')
+        sys.exit(0)
+
+    ip_port = None
+    adb_path = os.path.join('adb-assets', 'platform-tools', 'adb')
+    #use below to test ip port on google beta developer
+    #subprocess.run([adb_path, 'kill-server'])
+    devices = getDevices(False)
+
+    while(len(devices) == 0 or len(devices) > 1):
+        
+        print('ADB Setup')
+        devices = getDevices(True)
+        print('Type the ip and port of the device that you want to select or add')
+        print('By leaving it blank it wil default to 127.0.0.1:5555')
+        user_choice = input('Device: ') or 'localhost:5555'
+        if user_choice in devices:
+            ip_port = user_choice
+        else:
+            test_connection = subprocess.run([adb_path, 'connect', user_choice], capture_output=True, text=True)
+            print(test_connection.stdout)
+            test_res = test_connection.stdout.split(' ')
+            if test_res[0] == 'connected' and test_res[1] == 'to':
+                ip_port = user_choice
+                break
+            else:
+                print('Fail to connect, try again')
+    
+    debug = False
+    if input('Launch in debug mode? (yes/no): ').lower() == 'yes':
+        debug = True
+        print('Program will now run in debug mode and will buy friendship bookmarks for testing purpose')
+
+    else:
+        print('Running as normal')
+    print()
+
     try:
         tap_sleep = float(input('Tap sleep(in seconds) recommand 0.5: '))
     except:
         print('invalid input, default to tap sleep of 0.5 second')
         tap_sleep = 0.5
+    print()
     try:
-        budget = float(input('Amount of skystone that you want to spend:'))
+        budget = float(input('Amount of skystone that you want to spend: '))
     except:
         print('invalid input, default to 1000 skystone budget')
         budget = 1000
@@ -297,7 +351,7 @@ if __name__ == '__main__':
     print('Press Esc to terminate anytime!')
     print()
     print('Progress:')
-    ADBSHOP = E7ADBShopRefresh(tap_sleep=tap_sleep, budget=budget)
+    ADBSHOP = E7ADBShopRefresh(tap_sleep=tap_sleep, budget=budget, ip_port=ip_port, debug=debug)
     ADBSHOP.start()
     print()
     input('press enter to exit...')
