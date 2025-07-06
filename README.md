@@ -8,7 +8,7 @@ There are two different ways to run auto shop refresh, either through **controll
 <br>
 
 ### Special Note (MUST READ!!!)
-1. If you are using the program with the **new PC Client**, then you need to **run the program with administrator privileges**
+1. If you are using the program with the **new PC Client**, then you need to **run the shop refresh program with administrator privileges**
 
 (This is not necessary when you are using an emulator.)
 
