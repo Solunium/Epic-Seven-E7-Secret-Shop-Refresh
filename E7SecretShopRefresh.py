@@ -488,16 +488,16 @@ class SecretShopRefresh:
 
     def scrollShop(self):
         x = self.window.left + self.window.width * 0.58
-        y = self.window.top + self.window.height * 0.62
+        y = self.window.top + self.window.height * 0.65
         pyautogui.moveTo(x, y)
         pyautogui.mouseDown(button='left')
-        pyautogui.moveTo(x, y-self.window.height*0.28)
+        pyautogui.moveTo(x, y-self.window.height*0.277)
         pyautogui.mouseUp(button='left')
     
     def scrollUp(self):
         x = self.window.left + self.window.width * 0.58
-        y = self.window.top + self.window.height * 0.62
-        pyautogui.moveTo(x, y-self.window.height*0.28)
+        y = self.window.top + self.window.height * 0.65
+        pyautogui.moveTo(x, y-self.window.height*0.277)
         pyautogui.mouseDown(button='left')
         pyautogui.moveTo(x, y)
         pyautogui.mouseUp(button='left')
@@ -510,7 +510,7 @@ class AppConfig():
                                  'BlueStacks App Player',
                                  'LDPlayer',
                                  'MuMu Player 12',
-                                 'Epic Seven : ORIGIN'}        #if detected title show up in the select bar so that you don't need to manual enter
+                                 '에픽세븐'}        #if detected title show up in the select bar so that you don't need to manual enter
         self.ALL_PATH = ['cov.jpg', 'mys.jpg', 'fb.jpg']        #Path to all the image
         self.ALL_NAME = ['Covenant bookmark','Mystic medal','Friendship bookmark']      #Name to all the image
         self.ALL_PRICE = [184000,280000,18000]      #Price to the image
@@ -578,7 +578,7 @@ class AutoRefreshGUI:
                                     values=titles)
         titles_combo_box.config()       #apply ui change here
         titles_combo_box.bind('<<ComboboxSelected>>', onSelect)
-        titles_combo_box.bind('<Return>', onEnter)
+        titles_combo_box.bind('<KeyRelease>', onEnter)
         
         #special setting
         special_frame = tk.Frame(self.root, bg=self.unite_bg_color)
