@@ -158,7 +158,7 @@ pip install -r requirements.txt
 python -m PyInstaller -F --noconsole -i assets/icon.ico E7SecretShopRefresh.py
 ```
 ```
-python -m pyinstaller -F -i adb-assets/icon.ico E7ADBShopRefresh.py
+python -m PyInstaller -F -i adb-assets/icon.ico E7ADBShopRefresh.py
 ```
 
 <br>
