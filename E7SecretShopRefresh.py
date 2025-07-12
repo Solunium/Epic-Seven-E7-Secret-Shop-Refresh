@@ -193,7 +193,7 @@ class SecretShopRefresh:
             time.sleep(1)
             
             #item sliding const
-            sliding_time = 0.6 + self.screenshot_sleep if self.screenshot_sleep >= 0.3 else 0.9
+            sliding_time = 0.7 + self.screenshot_sleep if self.screenshot_sleep >= 0.3 else 1
 
             #Loop for how the 
             while self.loop_active:
