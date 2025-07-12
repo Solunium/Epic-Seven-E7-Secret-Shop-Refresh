@@ -155,10 +155,10 @@ pip install -r requirements.txt
 
 **Step 6.** (Optional) Use pyinstaller to create an executable
 ```
-pyinstaller -F --noconsole -i assets/icon.ico E7SecretShopRefresh.py
+python -m PyInstaller -F --noconsole -i assets/icon.ico E7SecretShopRefresh.py
 ```
 ```
-pyinstaller -F -i adb-assets/icon.ico E7ADBShopRefresh.py
+python -m pyinstaller -F -i adb-assets/icon.ico E7ADBShopRefresh.py
 ```
 
 <br>
