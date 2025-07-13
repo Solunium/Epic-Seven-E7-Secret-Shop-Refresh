@@ -417,7 +417,7 @@ class SecretShopRefresh:
         
         if loc[0].size > 0:
             x = self.window.left + self.window.width*0.90
-            y = self.window.top + loc[0][0] + process_item.shape[0]*3//4
+            y = self.window.top + loc[0][0] + process_item.shape[0]*0.85
             pos = (x, y)        
             return pos
         return None
