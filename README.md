@@ -145,6 +145,8 @@ You can check your refreshing history in the folder called **ShopRefreshHistory*
 
 **Step 2.** Git clone this repository to your directory
 
+If you don't want to deal with git, then download the code as zip file using the green "code" button on top
+
 **Step 3.** (Optional) Setup and activate a virtual environment with venv or conda
 
 **Step 4.** Install the dependencies
