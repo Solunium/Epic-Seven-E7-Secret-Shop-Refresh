@@ -30,7 +30,11 @@ class RefreshStatistic:
     def __init__(self):
         self.refresh_count = 0
         self.items = {}
+        self.start_time = datetime.now()
         
+    def updateTime(self):
+        self.start_time = datetime.now()
+
     def addShopItem(self, path: str, name='', price=0, count=0):
         image = cv2.imread(os.path.join('assets', path))
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -79,12 +83,12 @@ class RefreshStatistic:
         if not os.path.isfile(path):
             with open(path, 'w', newline='') as file:
                 writer = csv.writer(file)
-                column_name = ['Time', 'Refresh count', 'Skystone spent', 'Gold spent']
+                column_name = ['Time', 'Duration', 'Refresh count', 'Skystone spent', 'Gold spent']
                 column_name.extend(self.getName())
                 writer.writerow(column_name)
         with open(path, 'a', newline='') as file:
             writer = csv.writer(file)
-            data = [datetime.now(), self.refresh_count, self.refresh_count*3, self.getTotalCost()]
+            data = [self.start_time, datetime.now()-self.start_time, self.refresh_count, self.refresh_count*3, self.getTotalCost()]
             data.extend(self.getItemCount())
             writer.writerow(data)
 
@@ -94,7 +98,7 @@ class SecretShopRefresh:
         self.debug = debug
         self.loop_active = False
         self.loop_finish = True
-        self.mouse_sleep = 0.2
+        self.mouse_sleep = 0.3
         self.screenshot_sleep = 0.3
         self.callback = callback if callback else self.refreshFinishCallback
         self.budget = budget
@@ -188,12 +192,13 @@ class SecretShopRefresh:
                 self.window.activate()
             except Exception as e:
                 print(e)
-
+            
+            self.rs_instance.updateTime()
             self.clickShop()
             time.sleep(1)
             
             #item sliding const
-            sliding_time = 0.7 + self.screenshot_sleep if self.screenshot_sleep >= 0.3 else 1
+            sliding_time = max(0.7+self.screenshot_sleep, 1)
 
             #Loop for how the 
             while self.loop_active:
@@ -214,8 +219,12 @@ class SecretShopRefresh:
                 #show image if in debug
                 if self.debug:
                     cv2.imshow('Press any key to continue ...', process_screenshot)
+                    # debug_window = gw.getWindowsWithTitle('Press any key to continue ...')[0]
+                    # debug_window.activate()
                     cv2.waitKey(0)
                     cv2.destroyAllWindows()
+                    # self.window.activate()
+                    # time.sleep(2)
 
                 #checks if loading screen is blocking
                 check_screen, reset = self.checkLoading(process_screenshot)
@@ -249,7 +258,7 @@ class SecretShopRefresh:
                 
                 #scroll shop
                 self.scrollShop()
-                time.sleep(self.mouse_sleep)
+                time.sleep(max(0.3, self.screenshot_sleep))
                 if not self.loop_active: break
 
                 ###start of bundle refresh
@@ -259,8 +268,12 @@ class SecretShopRefresh:
                 #show image if in debug
                 if self.debug:
                     cv2.imshow('Press any key to continue ...', process_screenshot)
+                    # debug_window = gw.getWindowsWithTitle('Press any key to continue ...')[0]
+                    # debug_window.activate()
                     cv2.waitKey(0)
                     cv2.destroyAllWindows()
+                    # self.window.activate()
+                    # time.sleep(2)
 
                 #checks if loading screen is blocking
                 check_screen, reset = self.checkLoading(process_screenshot)
@@ -417,8 +430,8 @@ class SecretShopRefresh:
         
         if loc[0].size > 0:
             x = self.window.left + self.window.width*0.90
-            y = self.window.top + loc[0][0] + process_item.shape[0]*0.85
-            pos = (x, y)        
+            y = self.window.top + loc[0][0] + self.window.height*0.085
+            pos = (x, y)
             return pos
         return None
     
@@ -490,17 +503,19 @@ class SecretShopRefresh:
         x = self.window.left + self.window.width * 0.58
         y = self.window.top + self.window.height * 0.65
         pyautogui.moveTo(x, y)
-        pyautogui.mouseDown(button='left')
-        pyautogui.moveTo(x, y-self.window.height*0.277)
-        pyautogui.mouseUp(button='left')
+        pyautogui.dragTo(x, y-self.window.height*0.277, 0.15, button='left')
+        # pyautogui.mouseDown(button='left')
+        # pyautogui.moveTo(x, y-self.window.height*0.277)
+        # pyautogui.mouseUp(button='left')
     
     def scrollUp(self):
         x = self.window.left + self.window.width * 0.58
         y = self.window.top + self.window.height * 0.65
         pyautogui.moveTo(x, y-self.window.height*0.277)
-        pyautogui.mouseDown(button='left')
-        pyautogui.moveTo(x, y)
-        pyautogui.mouseUp(button='left')
+        pyautogui.dragTo(x, y, 0.15, button='left')
+        # pyautogui.mouseDown(button='left')
+        # pyautogui.moveTo(x, y)
+        # pyautogui.mouseUp(button='left')
 
 class AppConfig():
     def __init__(self):
@@ -537,7 +552,7 @@ class AutoRefreshGUI:
         icon_path = os.path.join('assets', 'gui_icon.ico')
         self.root.iconbitmap(icon_path)
         self.title_name = ''
-        self.mouse_speed = 0.2
+        self.mouse_speed = 0.3
         self.screenshot_speed = 0.3
         self.ignore_path = set(self.app_config.ALL_PATH)-self.app_config.MANDATORY_PATH
         self.keep_image_open = []
