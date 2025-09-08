@@ -32,6 +32,8 @@ There are two different ways to run auto shop refresh, either through **controll
 
 <br>
 
+5. If you have a good PC, You can set the **mouse speed to 0 and Screenshot speed to 0.3**. Feel free to increase both value if it is running too fast.
+
 ### Refresh Options
 **Mouse**
 
@@ -172,8 +174,7 @@ Increase mouse speed, if the mouse is moving faster than ui animation
 
 Increase screenshot speed, if you have a longer loading time after each purchase/refresh action
 
-You can stay with the default speed setting in most cases 
-(I don't recommend lowering the mouse and screen speed if you don't know what you are doing)
+You can stay with the default speed setting in most cases
 
 By not setting a skystone budget, the program will run till ESC is pressed
 
