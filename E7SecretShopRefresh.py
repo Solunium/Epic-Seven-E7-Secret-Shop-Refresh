@@ -7,6 +7,7 @@ import os
 import time
 import threading
 from datetime import datetime
+import re
 
 #Library
 import pyautogui
@@ -649,6 +650,7 @@ class AutoRefreshGUI:
                                 font=('Helvetica',14),
                                 state=tk.DISABLED,
                                 command=self.startShopRefresh)
+        #check if recognize titles match with any window
         if titles:
             for t in titles:
                 if t in gw.getAllTitles():
@@ -657,6 +659,15 @@ class AutoRefreshGUI:
                     if not self.lock_start_button:
                         self.start_button.config(state=tk.NORMAL)
                     break
+        #check for google play title
+        if not self.title_name:
+            google_play_title_pattern = re.compile(r"^(Epic Seven|에픽세븐) - \w+$", re.UNICODE)
+            for t in gw.getAllTitles():
+                if google_play_title_pattern.fullmatch(t):
+                    self.title_name = t
+                    titles_combo_box.set(self.title_name)
+                    if not self.lock_start_button:
+                        self.start_button.config(state=tk.NORMAL)
 
         #UI from top to down
         app_title.pack(pady=(15,0))
