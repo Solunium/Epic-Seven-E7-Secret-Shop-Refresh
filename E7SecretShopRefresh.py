@@ -668,6 +668,7 @@ class AutoRefreshGUI:
                     titles_combo_box.set(self.title_name)
                     if not self.lock_start_button:
                         self.start_button.config(state=tk.NORMAL)
+                    break
 
         #UI from top to down
         app_title.pack(pady=(15,0))
