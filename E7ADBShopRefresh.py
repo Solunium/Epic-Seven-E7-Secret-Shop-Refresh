@@ -11,6 +11,7 @@ import cv2
 import numpy as np
 import keyboard
 import random
+import configparser
 
 class E7Item:
     def __init__(self, image=None, price=0, count=0):
@@ -323,11 +324,19 @@ def getDevices(print_output):
             devices.append(seq[0])
         return devices
 
-def createConfigFile():
-    pass
+CONFIG_FILE = "ADBconfig.ini"
 
-def loadConfigFile():
-    pass
+def saveConfigFile(tap_sleep, budget, stop_refresh_key, random_offset):
+    config = configparser.ConfigParser()
+    config["Settings"] = {
+        "tap_sleep": str(tap_sleep),
+        "budget": str(budget),
+        "stop_refresh_key": str(stop_refresh_key),
+        "random_offset": str(random_offset)
+    }
+    with open(CONFIG_FILE, "w") as f:
+        config.write(f)
+    print('Setting saved')
 
 if __name__ == '__main__':
 
@@ -373,9 +382,49 @@ if __name__ == '__main__':
             else:
                 print('Fail to connect, try again')
     
+    if os.path.exists(CONFIG_FILE):
+        config = configparser.ConfigParser()
+        config.read(CONFIG_FILE)
+        print("Last Saved Setting:")
+        for section in config.sections():
+            for key, value in config[section].items():
+                print(f'{key} = {value}')
+        print()
+        print('Use last saved setting?')
+        if input('leave blank for yes, or type (yes/no): ') == 'no':
+            print()
+            print('Update setting')
+            print()
+        else:
+            if config.getfloat("Settings", "budget") >= 1000:
+                ev_cost = 1691.04536 * config.getfloat("Settings", "budget") * 2
+                ev_cov = 0.006602509 * config.getfloat("Settings", "budget") * 2
+                ev_mys = 0.001700646 * config.getfloat("Settings", "budget") * 2
+                print()
+                print('Approximation(EV) based on current budget:')
+                print(f'Cost: {int(ev_cost):,} (make sure you have at least this much gold)')
+                print(f'Cov: {ev_cov:.1f}')
+                print(f'mys: {ev_mys:.1f}')
+                print()
+                input('Press enter to start!')
+                print(f'Press "{config["Settings"]["stop_refresh_key"]}" to terminate anytime!')
+                print()
+                print('Progress:')
+                ADBSHOP = E7ADBShopRefresh(tap_sleep=config.getfloat("Settings", "tap_sleep"),
+                                        budget=config.getfloat("Settings", "budget"),
+                                        ip_port=ip_port,
+                                        stop_refresh_key=config["Settings"]["stop_refresh_key"],
+                                        random_offset=config.getboolean("Settings", "random_offset"),
+                                        debug=False)
+                ADBSHOP.start()
+                print()
+                input('press enter to exit...')
+                sys.exit(0)
+
+
     debug = False
     print('First time user should always launch in debug mode')
-    if input('Launch in debug mode? (yes/no): ').lower() == 'yes':
+    if input('Launch in debug mode? leave bank for no (yes/no): ').lower() == 'yes':
         debug = True
         print()
         print('Debug mode:')
@@ -433,7 +482,11 @@ if __name__ == '__main__':
     except:
         print('invalid input, default to 1000 skystone budget')
         budget = 1000
-    print()
+    
+    if not debug:
+        print()
+        saveConfigFile(tap_sleep=tap_sleep, budget=budget, stop_refresh_key=stop_refresh_key, random_offset=random_offset)
+        print()
 
     if budget >= 1000:
             ev_cost = 1691.04536 * int(budget) * 2
