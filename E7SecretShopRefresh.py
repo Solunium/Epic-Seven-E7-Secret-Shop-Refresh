@@ -16,6 +16,7 @@ import cv2
 import numpy as np
 import keyboard
 from PIL import ImageGrab
+import random
 
 class ShopItem:
     def __init__(self, path='', image=None, price=0, count=0):
@@ -548,8 +549,8 @@ class AutoRefreshGUI:
         self.root.attributes("-alpha", 0.95)
 
         self.root.title('SHOP AUTO REFRESH')
-        self.root.geometry('420x745')
-        self.root.minsize(420, 745)
+        self.root.geometry('420x775')
+        self.root.minsize(420, 775)
         icon_path = os.path.join('assets', 'gui_icon.ico')
         self.root.iconbitmap(icon_path)
         self.title_name = ''
@@ -600,6 +601,7 @@ class AutoRefreshGUI:
         special_frame = tk.Frame(self.root, bg=self.unite_bg_color)
         self.hint_cbv = tk.IntVar()
         self.move_zerozero_cbv = tk.IntVar()
+        self.random_click_cbv = tk.IntVar()
         
         def setupSpecialSetting(label, value):
             frame = tk.Frame(special_frame, bg=self.unite_bg_color)
@@ -619,6 +621,7 @@ class AutoRefreshGUI:
 
         setupSpecialSetting('Hint:', self.hint_cbv)
         setupSpecialSetting('Auto move emulator window to top left:', self.move_zerozero_cbv)
+        setupSpecialSetting('Randomize click:', self.random_click_cbv)
 
         #setting frame
         setting_frame = tk.Frame(self.root)
