@@ -10,6 +10,7 @@ import threading
 import cv2
 import numpy as np
 import keyboard
+import random
 
 class E7Item:
     def __init__(self, image=None, price=0, count=0):
@@ -77,12 +78,20 @@ class E7Inventory:
             writer.writerow(data)
 
 class E7ADBShopRefresh:
-    def __init__(self, tap_sleep:float = 0.5, budget=None, ip_port=None, debug=False):
+    def __init__(self, tap_sleep:float = 0.3, budget=None, ip_port=None, stop_refresh_key='esc', random_offset = False, debug=False):
         self.loop_active = False
         self.end_of_refresh = True
         self.tap_sleep = tap_sleep
         self.budget = budget
         self.ip_port = ip_port
+        self.stop_refresh_key = stop_refresh_key
+
+        #random offset
+        self.random_offset = random_offset
+        self.x_offset = 75 if random_offset else 0
+        self.y_offset = 25 if random_offset else 0
+
+        self.debug = debug
         self.device_args = [] if ip_port is None else ['-s', ip_port]
         self.refresh_count = 0
         self.keyboard_thread = threading.Thread(target=self.checkKeyPress)
@@ -94,7 +103,7 @@ class E7ADBShopRefresh:
 
         self.storage.addItem('cov.jpg', 'Covenant bookmark', 184000)
         self.storage.addItem('mys.jpg', 'Mystic medal', 280000)
-        if debug:
+        if self.debug:
             self.storage.addItem('fb.jpg', 'Friendship bookmark', 18000)
 
     def start(self):
@@ -106,21 +115,21 @@ class E7ADBShopRefresh:
     #threads
     def checkKeyPress(self):
         while(self.loop_active and not self.end_of_refresh):
-            self.loop_active = not keyboard.is_pressed('esc')
+            self.loop_active = not keyboard.is_pressed(self.stop_refresh_key)
         self.loop_active = False
         print('Shop refresh terminated!')
 
     def refreshShop(self):
         self.clickShop()
-        #time needed for item to drop in after refresh (0.8)
-        sliding_time = 1
+        #time needed for item to drop in after refresh (0.5 second loading + drop 1 second)
+        sliding_time = 1.5
         #stat track
         start_time = time.time()
         milestone = self.budget//10
         #swipe location
-        x1 = str(0.6250 * self.screenwidth)
-        y1 = str(0.7481 * self.screenheight)
-        y2 = str(0.3629 * self.screenheight)
+        x1 = 0.6250 * self.screenwidth
+        y1 = 0.7481 * self.screenheight
+        y2 = 0.3629 * self.screenheight
         #refresh loop
         while self.loop_active:
 
@@ -139,10 +148,16 @@ class E7ADBShopRefresh:
                     brought.add(key)
 
             if not self.loop_active: break
+            
             #swipe
-            adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'swipe', x1, y1, x1, y2])
+            #debug
+            if self.debug:
+                self.showOffsetArea(self.takeScreenshot(), x1, y1, "Please check if red rectangle is in a scrollable area")    
+
+            xoff, yoff = self.generateOffset()
+            adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'swipe', str(x1+xoff), str(y1+yoff), str(x1+xoff), str(y2+yoff)])
             #wait for action to complete
-            time.sleep(0.75)
+            time.sleep(1)
 
             if not self.loop_active: break
             #look at shop (page 2)
@@ -194,20 +209,34 @@ class E7ADBShopRefresh:
 
     def takeScreenshot(self):
         adb_process = subprocess.run([self.adb_path] + self.device_args + ['exec-out', 'screencap','-p'], stdout=subprocess.PIPE)
-        byte_image = BytesIO(adb_process.stdout)
-        pil_image = Image.open(byte_image)
-        pil_image = np.array(pil_image)
-        screenshot = cv2.cvtColor(pil_image, cv2.COLOR_BGR2GRAY)
+        img_array = np.frombuffer(adb_process.stdout, dtype=np.uint8)
+        screenshot = cv2.imdecode(img_array, cv2.IMREAD_GRAYSCALE)
         # ims = cv2.resize(screenshot, (960, 540))
         # cv2.imshow('image window', ims)
         # cv2.waitKey(0)
         # cv2.destroyAllWindows()
         return screenshot
+    
+    def showOffsetArea(self, screenshot, x, y, imshow_title = "Debug"):
+        ims = cv2.cvtColor(screenshot, cv2.COLOR_GRAY2BGR)
+        cv2.rectangle(ims, (int(x-self.x_offset), int(y-self.y_offset)), (int(x+self.x_offset), int(y+self.y_offset)), (0, 0, 255), 2)
+        ims = cv2.resize(ims, (960, 540))
+        cv2.imshow(imshow_title + f' - press {self.stop_refresh_key} to stop debug', ims)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+    def generateOffset(self):
+        if self.random_offset:
+            generate_x_offset = random.randint(-self.x_offset, self.x_offset)
+            generate_y_offset = random.randint(-self.y_offset, self.y_offset)
+            return (generate_x_offset, generate_y_offset)
+        return (0, 0)
 
     def findItemPosition(self, screen_image, item_image):
         result = cv2.matchTemplate(screen_image, item_image, cv2.TM_CCOEFF_NORMED)
         loc = np.where(result >= 0.75)
-
+        
+        #find location of item
         if loc[0].size > 0:
             x = loc[1][0] + self.screenwidth * 0.4718
             y = loc[0][0] + self.screenheight * 0.1000
@@ -240,27 +269,48 @@ class E7ADBShopRefresh:
             return False
         
         x, y = pos
-        adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'tap', str(x), str(y)])
+        xoff, yoff = self.generateOffset() 
+
+        #debug
+        if self.debug: self.showOffsetArea(self.takeScreenshot(), x, y, "Please check if red rectangle is within buy button's border")
+
+        adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'tap', str(x+xoff), str(y+yoff)])
         time.sleep(self.tap_sleep)
 
         #confirm
         x = self.screenwidth * 0.5677
         y = self.screenheight * 0.7037
-        adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'tap', str(x), str(y)])
+        xoff, yoff = self.generateOffset() 
+
+        #debug
+        if self.debug: self.showOffsetArea(self.takeScreenshot(), x, y, "Please check if red rectangle is within buy button's border")
+
+        adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'tap', str(x+xoff), str(y+yoff)])
         time.sleep(self.tap_sleep)
-        time.sleep(0.5)
+        #loading sleep
+        time.sleep(1)
     
     def clickRefresh(self):
         x = self.screenwidth * 0.1698
         y = self.screenheight * 0.9138
-        adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'tap', str(x), str(y)])
+        xoff, yoff = self.generateOffset()
+        
+        #debug
+        if self.debug: self.showOffsetArea(self.takeScreenshot(), x, y, "Please check if red rectangle is within refresh button's border")
+
+        adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'tap', str(x+xoff), str(y+yoff)])
         time.sleep(self.tap_sleep)
 
         if not self.loop_active: return
         #confirm
         x = self.screenwidth * 0.5828
         y = self.screenheight * 0.6411
-        adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'tap', str(x), str(y)])
+        xoff, yoff = self.generateOffset()
+        
+        #debug
+        if self.debug: self.showOffsetArea(self.takeScreenshot(), x, y, "Please check if red rectangle is within buy confirm's border")
+        
+        adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'tap', str(x+xoff), str(y+yoff)])
         time.sleep(self.tap_sleep)
 
 def getDevices(print_output):
@@ -272,6 +322,12 @@ def getDevices(print_output):
             seq = line.split('\t')
             devices.append(seq[0])
         return devices
+
+def createConfigFile():
+    pass
+
+def loadConfigFile():
+    pass
 
 if __name__ == '__main__':
 
@@ -318,26 +374,67 @@ if __name__ == '__main__':
                 print('Fail to connect, try again')
     
     debug = False
+    print('First time user should always launch in debug mode')
     if input('Launch in debug mode? (yes/no): ').lower() == 'yes':
         debug = True
-        print('Program will now run in debug mode and will buy friendship bookmarks for testing purpose')
-
+        print()
+        print('Debug mode:')
+        print('Program will buy friendship bookmarks for testing purpose')
+        print('A image window will show up with a box that indicating the offset area from random click')
+        print('If the click area shown is not cover by the buy button, do not use the randomize click feature')
+        print('Closing the image window will continue to refresh debugging')
     else:
         print('Running as normal')
+        print()
+
+    #setting
+    stop_refresh_key = 'esc'
+    if debug:
+        print('use "esc" key to exit in debug mode')
+    else:
+        print("Input the key that you want to use to stop refresh (0-9 a-z /.,';[]) ")
+        print('Leave blank to use "esc" key')
+        stop_refresh_key = input('Key: ')
+        
+        if stop_refresh_key:
+            print(f'"{stop_refresh_key}" key will be use to stop refresh')
+        else:
+            stop_refresh_key = 'esc'
+            print('Default "esc" key to stop refresh')
+        print()
+    
+    random_offset = False
+    
+    if debug:
+        random_offset = True
+        print('Automatically enable randomize due to debug mode')
+    elif input('Enable randomize click (yes/no): ').lower() == 'yes':
+        random_offset = True
+        print('Randomize click enabled')
+        print('Only enable randomize click after going through a full loop of buying something in debug mode')
+    else:
+        print('Randomize click disabled')
     print()
+    
 
     try:
-        tap_sleep = float(input('Tap sleep(in seconds) recommand 0.5: '))
+        tap_sleep = float(input('Tap sleep(in seconds) Recommend - leave blank for 0.3 sec : '))
+        tap_sleep = max(0.3, tap_sleep)
     except:
-        print('invalid input, default to tap sleep of 0.5 second')
-        tap_sleep = 0.5
+        print('Default to tap sleep of 0.3 second')
+        tap_sleep = 0.3
     print()
     try:
-        budget = float(input('Amount of skystone that you want to spend: '))
+        budget = 100
+        if debug:
+            print('Default to 100 skystone for debug testing')
+        else:
+            budget = float(input('Amount of skystone that you want to spend: '))
     except:
         print('invalid input, default to 1000 skystone budget')
         budget = 1000
     print()
+
     if budget >= 1000:
             ev_cost = 1691.04536 * int(budget) * 2
             ev_cov = 0.006602509 * int(budget) * 2
@@ -348,10 +445,15 @@ if __name__ == '__main__':
             print(f'mys: {ev_mys:.1f}')
             print()
     input('Press enter to start!')
-    print('Press Esc to terminate anytime!')
+    print(f'Press "{stop_refresh_key}" to terminate anytime!')
     print()
     print('Progress:')
-    ADBSHOP = E7ADBShopRefresh(tap_sleep=tap_sleep, budget=budget, ip_port=ip_port, debug=debug)
+    ADBSHOP = E7ADBShopRefresh(tap_sleep=tap_sleep,
+                               budget=budget,
+                               ip_port=ip_port,
+                               stop_refresh_key=stop_refresh_key,
+                               random_offset=random_offset,
+                               debug=debug)
     ADBSHOP.start()
     print()
     input('press enter to exit...')
