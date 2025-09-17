@@ -396,6 +396,7 @@ if __name__ == '__main__':
             print('Update setting')
             print()
         else:
+            #print statistic
             if config.getfloat("Settings", "budget") >= 1000:
                 ev_cost = 1691.04536 * config.getfloat("Settings", "budget") * 2
                 ev_cov = 0.006602509 * config.getfloat("Settings", "budget") * 2
@@ -406,20 +407,22 @@ if __name__ == '__main__':
                 print(f'Cov: {ev_cov:.1f}')
                 print(f'mys: {ev_mys:.1f}')
                 print()
-                input('Press enter to start!')
-                print(f'Press "{config["Settings"]["stop_refresh_key"]}" to terminate anytime!')
-                print()
-                print('Progress:')
-                ADBSHOP = E7ADBShopRefresh(tap_sleep=config.getfloat("Settings", "tap_sleep"),
-                                        budget=config.getfloat("Settings", "budget"),
-                                        ip_port=ip_port,
-                                        stop_refresh_key=config["Settings"]["stop_refresh_key"],
-                                        random_offset=config.getboolean("Settings", "random_offset"),
-                                        debug=False)
-                ADBSHOP.start()
-                print()
-                input('press enter to exit...')
-                sys.exit(0)
+            
+            #Run refresh based on config file
+            input('Press enter to start!')
+            print(f'Press "{config["Settings"]["stop_refresh_key"]}" to terminate anytime!')
+            print()
+            print('Progress:')
+            ADBSHOP = E7ADBShopRefresh(tap_sleep=config.getfloat("Settings", "tap_sleep"),
+                                    budget=config.getfloat("Settings", "budget"),
+                                    ip_port=ip_port,
+                                    stop_refresh_key=config["Settings"]["stop_refresh_key"],
+                                    random_offset=config.getboolean("Settings", "random_offset"),
+                                    debug=False)
+            ADBSHOP.start()
+            print()
+            input('press enter to exit...')
+            sys.exit(0)
 
 
     debug = False
