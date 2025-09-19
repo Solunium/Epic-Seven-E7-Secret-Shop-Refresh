@@ -456,14 +456,13 @@ if __name__ == '__main__':
         print()
     
     random_offset = False
-    
+    print('Only enable randomize click after going through a full loop of buying something in debug mode')
     if debug:
         random_offset = True
         print('Automatically enable randomize due to debug mode')
     elif input('Enable randomize click (yes/no): ').lower() == 'yes':
         random_offset = True
         print('Randomize click enabled')
-        print('Only enable randomize click after going through a full loop of buying something in debug mode')
     else:
         print('Randomize click disabled')
     print()

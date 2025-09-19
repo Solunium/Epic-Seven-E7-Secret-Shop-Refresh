@@ -50,21 +50,15 @@ class RefreshStatistic:
         return list(self.items.keys())
 
     def getPath(self):
-        res = []
-        for value in self.items.values():
-            res.append(value.path)
-        return res
+        return [shop_item.path for shop_item in self.items.values()]
     
     def getItemCount(self):
-        res = []
-        for value in self.items.values():
-            res.append(value.count)
-        return res
+        return [shop_item.count for shop_item in self.items.values()]
     
     def getTotalCost(self):
         total = 0
-        for value in self.items.values():
-            total += value.price * value.count
+        for shop_item in self.items.values():
+            total += shop_item.price * shop_item.count
         return total
     
     def incrementRefreshCount(self):
@@ -247,11 +241,11 @@ class SecretShopRefresh:
                     continue
                 
                 #loop through all the assets to find item to buy
-                for key, value in self.rs_instance.getInventory().items():
-                    pos = self.findItemPosition(process_screenshot, value.image)
+                for key, shop_item in self.rs_instance.getInventory().items():
+                    pos = self.findItemPosition(process_screenshot, shop_item.image)
                     if pos is not None:
                         self.clickBuy(pos)
-                        value.count += 1
+                        shop_item.count += 1
                         brought.add(key)
 
                 #real time count UI update
@@ -301,11 +295,11 @@ class SecretShopRefresh:
                     continue
                 
                 #loop through all the assets to find item to buy
-                for key, value in self.rs_instance.getInventory().items():
-                    pos = self.findItemPosition(process_screenshot, value.image)
+                for key, shop_item in self.rs_instance.getInventory().items():
+                    pos = self.findItemPosition(process_screenshot, shop_item.image)
                     if pos is not None and key not in brought:
                         self.clickBuy(pos)
-                        value.count += 1
+                        shop_item.count += 1
 
                 if hint: updateMiniDisplay()
                 if not self.loop_active: break
