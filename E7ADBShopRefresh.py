@@ -153,7 +153,7 @@ class E7ADBShopRefresh:
             #swipe
             #debug
             if self.debug:
-                self.showOffsetArea(self.takeScreenshot(), x1, y1, "Please check if red rectangle is in a scrollable area")    
+                self.showOffsetArea(x1, y1, "Please check if red rectangle is in a scrollable area", "start scroll area")    
 
             xoff, yoff = self.generateOffset()
             adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'swipe', str(x1+xoff), str(y1+yoff), str(x1+xoff), str(y2+yoff)])
@@ -170,7 +170,7 @@ class E7ADBShopRefresh:
                     value.count += 1
 
             #print every 10% progress
-            if self.budget >= 30 and self.refresh_count*3 >= milestone:
+            if self.budget >= 30 and self.refresh_count*3 >= milestone and not self.debug:
                 sys.stdout.write(' ' * 80 + '\r')
                 sys.stdout.write(f'{int(milestone/self.budget*100)}% {self.storage.getStatusString()}\r')
                 sys.stdout.flush()
@@ -218,11 +218,45 @@ class E7ADBShopRefresh:
         # cv2.destroyAllWindows()
         return screenshot
     
-    def showOffsetArea(self, screenshot, x, y, imshow_title = "Debug"):
-        ims = cv2.cvtColor(screenshot, cv2.COLOR_GRAY2BGR)
+    def showOffsetArea(self, x, y, imshow_title = "Debug", text_desc = ''):
+
+        #Grab a color image
+        adb_process = subprocess.run([self.adb_path] + self.device_args + ['exec-out', 'screencap','-p'], stdout=subprocess.PIPE)
+        img_array = np.frombuffer(adb_process.stdout, dtype=np.uint8)
+        ims = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+        
         cv2.rectangle(ims, (int(x-self.x_offset), int(y-self.y_offset)), (int(x+self.x_offset), int(y+self.y_offset)), (0, 0, 255), 2)
+        
+        # show text tip
+        if text_desc:
+            (text_width, text_height), baseline = cv2.getTextSize(text_desc, cv2.FONT_HERSHEY_SIMPLEX, 1, 2)
+            text_x = int(x-self.x_offset + ((x+self.x_offset) - (x-self.x_offset) -  text_width)/2)
+            text_y = int(y+self.y_offset + text_height + baseline)
+
+            text_props = {
+                'text': text_desc,
+                'org': (text_x, text_y),
+                'fontFace': cv2.FONT_HERSHEY_SIMPLEX,
+                'fontScale': 1,
+                'color': (0, 0, 255),
+                'thickness': 2,
+            }
+
+            #border  
+            text_border = {
+                'text': text_desc,
+                'org': (text_x, text_y),
+                'fontFace': cv2.FONT_HERSHEY_SIMPLEX,
+                'fontScale': 1,
+                'color': (0, 0, 0),
+                'thickness': 6,
+            }
+            ims = cv2.putText(ims, **text_border)
+            ims = cv2.putText(ims, **text_props)
+        
         ims = cv2.resize(ims, (960, 540))
         cv2.imshow(imshow_title + f' - press {self.stop_refresh_key} to stop debug', ims)
+        print('check image - find it in taskbar')
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
@@ -251,19 +285,19 @@ class E7ADBShopRefresh:
         x = self.screenwidth * 0.0411
         y = self.screenheight * 0.3835
         adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'tap', str(x), str(y)])
-        time.sleep(self.tap_sleep)
+        time.sleep(0.5)
 
         #oldshop
         x = self.screenwidth * 0.4406
         y = self.screenheight * 0.2462
         adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'tap', str(x), str(y)])
-        time.sleep(self.tap_sleep)
+        time.sleep(0.5)
 
         #newshop
         x = self.screenwidth * 0.0411
         y = self.screenheight * 0.3835
         adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'tap', str(x), str(y)])
-        time.sleep(self.tap_sleep)
+        time.sleep(0.5)
 
     def clickBuy(self, pos):
         if pos is None:
@@ -273,7 +307,7 @@ class E7ADBShopRefresh:
         xoff, yoff = self.generateOffset() 
 
         #debug
-        if self.debug: self.showOffsetArea(self.takeScreenshot(), x, y, "Please check if red rectangle is within buy button's border")
+        if self.debug: self.showOffsetArea(x, y, "Please check if red rectangle is within buy button's border", "click buy area")
 
         adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'tap', str(x+xoff), str(y+yoff)])
         time.sleep(self.tap_sleep)
@@ -284,7 +318,7 @@ class E7ADBShopRefresh:
         xoff, yoff = self.generateOffset() 
 
         #debug
-        if self.debug: self.showOffsetArea(self.takeScreenshot(), x, y, "Please check if red rectangle is within buy button's border")
+        if self.debug: self.showOffsetArea(x, y, "Please check if red rectangle is within buy button's border", "click buy area")
 
         adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'tap', str(x+xoff), str(y+yoff)])
         time.sleep(self.tap_sleep)
@@ -297,7 +331,7 @@ class E7ADBShopRefresh:
         xoff, yoff = self.generateOffset()
         
         #debug
-        if self.debug: self.showOffsetArea(self.takeScreenshot(), x, y, "Please check if red rectangle is within refresh button's border")
+        if self.debug: self.showOffsetArea(x, y, "Please check if red rectangle is within refresh button's border", 'click refresh area')
 
         adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'tap', str(x+xoff), str(y+yoff)])
         time.sleep(self.tap_sleep)
@@ -309,7 +343,7 @@ class E7ADBShopRefresh:
         xoff, yoff = self.generateOffset()
         
         #debug
-        if self.debug: self.showOffsetArea(self.takeScreenshot(), x, y, "Please check if red rectangle is within buy confirm's border")
+        if self.debug: self.showOffsetArea(x, y, "Please check if red rectangle is within buy confirm's border", 'click confirm area')
         
         adb_process = subprocess.run([self.adb_path] + self.device_args + ['shell', 'input', 'tap', str(x+xoff), str(y+yoff)])
         time.sleep(self.tap_sleep)
@@ -432,9 +466,9 @@ if __name__ == '__main__':
         print()
         print('Debug mode:')
         print('Program will buy friendship bookmarks for testing purpose')
-        print('A image window will show up with a box that indicating the offset area from random click')
-        print('If the click area shown is not cover by the buy button, do not use the randomize click feature')
-        print('Closing the image window will continue to refresh debugging')
+        print('It will pause to generate a image window - will show up in the taskbar')
+        print('If the click area shown is not within the UI button, do not use the randomize click feature')
+        print('Closing the image window will continue to refresh action')
     else:
         print('Running as normal')
         print()
@@ -442,7 +476,8 @@ if __name__ == '__main__':
     #setting
     stop_refresh_key = 'esc'
     if debug:
-        print('use "esc" key to exit in debug mode')
+        print('Keep looking at image until friendship bookmark or any bm is purchased')
+        print('Use "esc" key to exit in debug mode')
     else:
         print("Input the key that you want to use to stop refresh (0-9 a-z /.,';[]) ")
         print('Leave blank to use "esc" key')
@@ -453,13 +488,13 @@ if __name__ == '__main__':
         else:
             stop_refresh_key = 'esc'
             print('Default "esc" key to stop refresh')
-        print()
+    print()
     
     random_offset = False
     print('Only enable randomize click after going through a full loop of buying something in debug mode')
     if debug:
         random_offset = True
-        print('Automatically enable randomize due to debug mode')
+        print('Automatically enable randomize click due to debug mode')
     elif input('Enable randomize click (yes/no): ').lower() == 'yes':
         random_offset = True
         print('Randomize click enabled')
