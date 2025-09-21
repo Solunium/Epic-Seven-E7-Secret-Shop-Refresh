@@ -212,33 +212,22 @@ class SecretShopRefresh:
                 screenshot = self.takeScreenshot()
                 process_screenshot = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
 
-                #show image if in debug
-                if self.debug:
-                    cv2.imshow('Press any key to continue ...', process_screenshot)
-                    # debug_window = gw.getWindowsWithTitle('Press any key to continue ...')[0]
-                    # debug_window.activate()
-                    cv2.waitKey(0)
-                    cv2.destroyAllWindows()
-                    # self.window.activate()
-                    # time.sleep(2)
+                #show processed image
+                # cv2.imshow('Press any key to continue ...', process_screenshot)
+                # cv2.waitKey(0)
+                # cv2.destroyAllWindows()
+                    
+                # #checks if loading screen is blocking - No longer works cause loading symbol changed
+                # check_screen, reset = self.checkLoading(process_screenshot)
+                # if check_screen is None:
+                #     break      
+                # else:
+                #     process_screenshot = check_screen
 
-                #checks if loading screen is blocking
-                check_screen, reset = self.checkLoading(process_screenshot)
-                if check_screen is None:
-                    break      
-                else:
-                    process_screenshot = check_screen
-
-                if reset:
-                    # x = self.window.left + self.window.width * 0.04
-                    # y = self.window.top + self.window.height * 0.10
-                    # pyautogui.moveTo(x, y)
-                    # pyautogui.click()
-                    # time.sleep(1)
-                    # self.clickShop()
-                    self.scrollUp()
-                    time.sleep(0.5)
-                    continue
+                # if reset:
+                #     self.scrollUp()
+                #     time.sleep(0.5)
+                #     continue
                 
                 #loop through all the assets to find item to buy
                 for key, shop_item in self.rs_instance.getInventory().items():
@@ -261,43 +250,33 @@ class SecretShopRefresh:
                 screenshot = self.takeScreenshot()
                 process_screenshot = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
 
-                #show image if in debug
-                if self.debug:
-                    cv2.imshow('Press any key to continue ...', process_screenshot)
-                    # debug_window = gw.getWindowsWithTitle('Press any key to continue ...')[0]
-                    # debug_window.activate()
-                    cv2.waitKey(0)
-                    cv2.destroyAllWindows()
-                    # self.window.activate()
-                    # time.sleep(2)
+                #show processed image
+                # cv2.imshow('Press any key to continue ...', process_screenshot)
+                # cv2.waitKey(0)
+                # cv2.destroyAllWindows()
 
-                #checks if loading screen is blocking
-                check_screen, reset = self.checkLoading(process_screenshot)
-                if check_screen is None:
-                    break      
-                else:
-                    process_screenshot = check_screen
+                # #checks if loading screen is blocking  - no longer works cause loading changed
+                # check_screen, reset = self.checkLoading(process_screenshot)
+                # if check_screen is None:
+                #     break      
+                # else:
+                #     process_screenshot = check_screen
 
-                if reset:
-                    for key in brought:
-                        value = self.rs_instance.items.get(key)
-                        if value:
-                            value.count -= 1
-
-                    # x = self.window.left + self.window.width * 0.04
-                    # y = self.window.top + self.window.height * 0.10
-                    # pyautogui.moveTo(x, y)
-                    # pyautogui.click()
-                    # time.sleep(1)
-                    # self.clickShop()
-                    self.scrollUp()
-                    time.sleep(0.5)
-                    continue
+                # if reset:
+                #     for key in brought:
+                #         value = self.rs_instance.getInventory().get(key)
+                #         if value:
+                #             value.count -= 1
+                #     self.scrollUp()
+                #     time.sleep(0.5)
+                #     continue
                 
                 #loop through all the assets to find item to buy
                 for key, shop_item in self.rs_instance.getInventory().items():
+                    if key in brought:
+                        continue
                     pos = self.findItemPosition(process_screenshot, shop_item.image)
-                    if pos is not None and key not in brought:
+                    if pos is not None:
                         self.clickBuy(pos)
                         shop_item.count += 1
 
@@ -417,12 +396,16 @@ class SecretShopRefresh:
         #debug mode!
         if self.debug and loc[0].size > 0:
             debug_screenshot = process_screenshot.copy()
+            debug_screenshot = cv2.cvtColor(debug_screenshot, cv2.COLOR_GRAY2RGB)
             for pt in zip (*loc[::-1]):
-                cv2.rectangle(debug_screenshot, pt, (pt[0] + process_item.shape[1], pt[1] + process_item.shape[0]), (255, 255,0), 2)
+                cv2.rectangle(debug_screenshot, pt, (pt[0] + process_item.shape[1], pt[1] + process_item.shape[0]), (0, 255, 0), 1)
             cv2.imshow('Press any key to continue ...', debug_screenshot)
             #cv2.imwrite('Debug.png', debug_screenshot)
             cv2.waitKey(0)
             cv2.destroyAllWindows()
+            time.sleep(1)
+            self.window.activate()
+            time.sleep(1)
         
         if loc[0].size > 0:
             x = self.window.left + self.window.width*0.90
@@ -450,10 +433,10 @@ class SecretShopRefresh:
         time.sleep(self.mouse_sleep)
         time.sleep(self.screenshot_sleep)   #Account for Loading
 
-        #checks if loading screen is blocking
-        screenshot = self.takeScreenshot()
-        process_screenshot = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
-        self.checkLoading(process_screenshot)
+        # #checks if loading screen is blocking
+        # screenshot = self.takeScreenshot()
+        # process_screenshot = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
+        # self.checkLoading(process_screenshot)
 
     #REFRESH MACRO
     def clickRefresh(self):
@@ -499,19 +482,21 @@ class SecretShopRefresh:
         x = self.window.left + self.window.width * 0.58
         y = self.window.top + self.window.height * 0.65
         pyautogui.moveTo(x, y)
-        pyautogui.dragTo(x, y-self.window.height*0.277, 0.15, button='left')
-        # pyautogui.mouseDown(button='left')
-        # pyautogui.moveTo(x, y-self.window.height*0.277)
-        # pyautogui.mouseUp(button='left')
+        time.sleep(0.1)
+        pyautogui.mouseDown(button='left')
+        time.sleep(0.1)
+        pyautogui.moveTo(x, y-self.window.height*0.277)
+        pyautogui.mouseUp(button='left')
     
     def scrollUp(self):
         x = self.window.left + self.window.width * 0.58
         y = self.window.top + self.window.height * 0.65
         pyautogui.moveTo(x, y-self.window.height*0.277)
-        pyautogui.dragTo(x, y, 0.15, button='left')
-        # pyautogui.mouseDown(button='left')
-        # pyautogui.moveTo(x, y)
-        # pyautogui.mouseUp(button='left')
+        time.sleep(0.1)
+        pyautogui.mouseDown(button='left')
+        time.sleep(0.1)
+        pyautogui.moveTo(x, y)
+        pyautogui.mouseUp(button='left')
 
 class AppConfig():
     def __init__(self):
@@ -521,10 +506,12 @@ class AppConfig():
                                  'BlueStacks App Player',
                                  'LDPlayer',
                                  'MuMu Player 12',
-                                 '에픽세븐'}        #if detected title show up in the select bar so that you don't need to manual enter
-        self.ALL_PATH = ['cov.jpg', 'mys.jpg', 'fb.jpg']        #Path to all the image
-        self.ALL_NAME = ['Covenant bookmark','Mystic medal','Friendship bookmark']      #Name to all the image
-        self.ALL_PRICE = [184000,280000,18000]      #Price to the image
+                                 '에픽세븐',
+                                 'Google Play Games on PC Emulator'}        #if detected title show up in the select bar so that you don't need to manual enter
+        #list of all the purchasable item
+        self.ALL_ITEMS = [['cov.jpg', 'Covenant bookmark', 184000],
+                          ['mys.jpg', 'Mystic medal', 280000],
+                          ['fb.jpg', 'Friendship bookmark', 18000]]
         self.MANDATORY_PATH = {'cov.jpg', 'mys.jpg'}        #make item unable to be unselected
         self.DEBUG = False
         
@@ -543,14 +530,14 @@ class AutoRefreshGUI:
         self.root.attributes("-alpha", 0.95)
 
         self.root.title('SHOP AUTO REFRESH')
-        self.root.geometry('420x775')
-        self.root.minsize(420, 775)
+        self.root.geometry('420x745')
+        self.root.minsize(420, 745)
         icon_path = os.path.join('assets', 'gui_icon.ico')
         self.root.iconbitmap(icon_path)
         self.title_name = ''
         self.mouse_speed = 0.3
         self.screenshot_speed = 0.3
-        self.ignore_path = set(self.app_config.ALL_PATH)-self.app_config.MANDATORY_PATH
+        self.ignore_path = {'fb.jpg'}
         self.keep_image_open = []
         self.lock_start_button = False
         self.budget = ''
@@ -593,9 +580,10 @@ class AutoRefreshGUI:
         
         #special setting
         special_frame = tk.Frame(self.root, bg=self.unite_bg_color)
-        self.hint_cbv = tk.IntVar()
-        self.move_zerozero_cbv = tk.IntVar()
-        self.random_click_cbv = tk.IntVar()
+        self.hint_cbv = tk.BooleanVar(value=True)
+        self.move_zerozero_cbv = tk.BooleanVar(value=True)
+        # self.random_click_cbv = tk.BooleanVar(value=False)
+        # self.debug_cbv = tk.BooleanVar(value=False)
         
         def setupSpecialSetting(label, value):
             frame = tk.Frame(special_frame, bg=self.unite_bg_color)
@@ -615,7 +603,9 @@ class AutoRefreshGUI:
 
         setupSpecialSetting('Hint:', self.hint_cbv)
         setupSpecialSetting('Auto move emulator window to top left:', self.move_zerozero_cbv)
-        setupSpecialSetting('Randomize click:', self.random_click_cbv)
+        
+        # setupSpecialSetting('Random click offset:', self.random_click_cbv)
+        # setupSpecialSetting('Check random click offset:', self.debug_cbv)
 
         #setting frame
         setting_frame = tk.Frame(self.root)
@@ -675,9 +665,9 @@ class AutoRefreshGUI:
         titles_combo_box.pack()
         #Step 2 Select item
         self.packMessage('Select item that you are looking for:')
-        for index, path in enumerate(self.app_config.ALL_PATH):
-            self.keep_image_open.append(ImageTk.PhotoImage(Image.open(os.path.join('assets', path))))
-            self.packItem(index, path)
+        for index, item in enumerate(self.app_config.ALL_ITEMS):
+            self.keep_image_open.append(ImageTk.PhotoImage(Image.open(os.path.join('assets', item[0]))))
+            self.packItem(index, item[0])
         self.packMessage('Setting:', 18, (10,0))
         #Step 3 Select setting
         #check if input is valid
@@ -758,26 +748,24 @@ class AutoRefreshGUI:
         self.root.title('Press ESC to stop!')
         self.lock_start_button = True
         self.start_button.config(state=tk.DISABLED)
+        self.ssr = SecretShopRefresh(title_name=self.title_name, callback=self.refreshComplete, debug=self.app_config.DEBUG)
 
-        if self.hint_cbv.get() == 1:
-            self.ssr = SecretShopRefresh(title_name=self.title_name, callback=self.refreshComplete, tk_instance=self.root, debug=self.app_config.DEBUG)
-        else:
-            self.ssr = SecretShopRefresh(title_name=self.title_name, callback=self.refreshComplete, debug=self.app_config.DEBUG)
+        if self.hint_cbv.get():
+            self.ssr.tk_instance = self.root
 
-        if self.move_zerozero_cbv.get() != 1:
+        if not self.move_zerozero_cbv.get():
             self.ssr.allow_move = True
 
         #setting item to refresh for
-        rs_instance = RefreshStatistic()
-        all_data = zip(self.app_config.ALL_PATH, self.app_config.ALL_NAME, self.app_config.ALL_PRICE)
-        for path, name, price in all_data:
-            if path not in self.ignore_path:
-                rs_instance.addShopItem(path, name, price)
-        self.ssr.rs_instance = rs_instance
+        for item in self.app_config.ALL_ITEMS:
+            if item[0] not in self.ignore_path:
+                self.ssr.addShopItem(path=item[0], name=item[1], price=item[2])
         
         #setting mouse speed
         self.ssr.mouse_sleep = float(self.mouse_speed_entry.get()) if self.mouse_speed_entry.get() != '' else self.mouse_speed
         self.ssr.screenshot_sleep = float(self.screenshot_speed_entry.get()) if self.screenshot_speed_entry.get() != '' else self.screenshot_speed
+        self.ssr.mouse_sleep = max(0.01, self.ssr.mouse_sleep)
+        self.ssr.screenshot_sleep = max(0.01, self.ssr.screenshot_sleep)
 
         #setting up skystone budget
         if self.limit_spend_entry.get() != '':
@@ -803,8 +791,8 @@ if __name__ == '__main__':
     # Secret shop with GUI
     gui = AutoRefreshGUI()
     
-    # # Uncomment below code start secret shop without gui, remember to comment everything above
-    # # Here are some parameter that you can pass in to secret shop calss
+    # # Uncomment below code start secret shop without gui, remember to comment "gui = AutoRefreshGUI()" above
+    # # Here are some parameter that you can pass in to secret shop class
     # # title_name: str      name of your emulator window
     # # call_back: func      callback function when the macro terminates
     # # budget: int          the ammont of skystone that you want to spend
