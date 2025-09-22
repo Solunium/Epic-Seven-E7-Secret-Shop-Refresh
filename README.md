@@ -14,9 +14,7 @@ There are two different ways to run auto shop refresh, either through **controll
 
 <br>
 
-2. When typing in the emulator/client's window title, **press 'Enter' key while in the textbox** to activate the start button
-
-(If the button is still grey-out, that means you typed the wrong window title, the name has to be exact down to the spacing)
+2. If the **button is grey-out**, that means you typed or selected the wrong window title, the name has to be exact down to the spacing
 
 <br>
 
@@ -32,7 +30,9 @@ There are two different ways to run auto shop refresh, either through **controll
 
 <br>
 
-5. If you have a good PC, You can set the **mouse speed to 0 and Screenshot speed to 0.3**. Feel free to increase both value if it is running too fast.
+5. Use the **friendship bookmark option** to find out what mouse speed suit your pc. Feel free to increase mouse speed if it's running too fast.
+
+(If you have a good PC, You can set the **mouse speed to 0 and Screenshot speed to 0.3**) 
 
 ### Refresh Options
 **Mouse**
@@ -67,8 +67,6 @@ Cons:
 
 - Requires emulator to have ADB 
 
-- Runs 2 times slower than mouse
-
 - need to set ingame resolution to be 1920 x 1080
 
 [Click Here to jump to ADB section](https://github.com/Solunium/Epic-Seven-E7-Secret-Shop-Refresh/tree/main?tab=readme-ov-file#quick-start-android-debug-bridge)
@@ -94,8 +92,6 @@ Cons:
 **Step 6.** (Optional) you can change the setting, refer to [Setting section](https://github.com/sya1999/Epic-Seven-Secret-Shop-Refresh/tree/main?tab=readme-ov-file#settings)
 
 **Step 6.5:** **EXTRA STEP FOR GOOGLE PLAY BETA USER**
-
-If you are using **GOOGLE PLAY BETA** with DUAL MONITOR, untick auto placement setting and move emulator to secondary monitor
 
 If you are using **GOOGLE PLAY BETA**, make sure **Desktop display resolution setting is 1920 x 1080**, so that it resize properly  
 
