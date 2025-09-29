@@ -196,11 +196,16 @@ class SecretShopRefresh:
             #item sliding const
             sliding_time = max(0.7+self.screenshot_sleep, 1)
 
-            #Loop for how the 
+            #Loop through shop 
             while self.loop_active:
                 
                 self.window.resizeTo(906, 539)
                 
+                # screenshot = self.takeScreenshot()
+                # ss = cv2.cvtColor(screenshot, cv2.COLOR_BGR2RGB)
+                # cv2.imwrite('screenshot.png',ss)
+                # input('wait')
+
                 #array for determining if an item has been purchsed in this loop
                 brought = set()
                 if not self.loop_active: break
@@ -509,9 +514,9 @@ class AppConfig():
                                  '에픽세븐',
                                  'Google Play Games on PC Emulator'}        #if detected title show up in the select bar so that you don't need to manual enter
         #list of all the purchasable item
-        self.ALL_ITEMS = [['cov.jpg', 'Covenant bookmark', 184000],
-                          ['mys.jpg', 'Mystic medal', 280000],
-                          ['fb.jpg', 'Friendship bookmark', 18000]]
+        self.ALL_ITEMS = [['cov.png', 'Covenant bookmark', 184000],
+                          ['mys.png', 'Mystic medal', 280000],
+                          ['fb.png', 'Friendship bookmark', 18000]]
         self.MANDATORY_PATH = {'cov.jpg', 'mys.jpg'}        #make item unable to be unselected
         self.DEBUG = False
         
@@ -537,7 +542,7 @@ class AutoRefreshGUI:
         self.title_name = ''
         self.mouse_speed = 0.3
         self.screenshot_speed = 0.3
-        self.ignore_path = {'fb.jpg'}
+        self.ignore_path = {'fb.png'}
         self.keep_image_open = []
         self.lock_start_button = False
         self.budget = ''
