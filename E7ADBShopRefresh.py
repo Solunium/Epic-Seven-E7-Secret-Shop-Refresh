@@ -29,6 +29,9 @@ class E7Inventory:
     def addItem(self, path:str, name='', price=0, count=0):
         image = cv2.imread(os.path.join('adb-assets', path))
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        # cv2.imshow('test', image)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
         newItem = E7Item(image, price, count)
         self.inventory[name] = newItem
 
@@ -100,7 +103,7 @@ class E7ADBShopRefresh:
         self.storage = E7Inventory()
         self.screenwidth = 1920
         self.screenheight = 1080
-        self.updateScreenDimension()
+        self.checkScreenDimension()
 
         self.storage.addItem('cov.jpg', 'Covenant bookmark', 184000)
         self.storage.addItem('mys.jpg', 'Mystic medal', 280000)
@@ -198,15 +201,18 @@ class E7ADBShopRefresh:
             print(key, ':', value.count)
         print('Skystone spent:', self.refresh_count*3)
 
-    def updateScreenDimension(self):
+    def checkScreenDimension(self):
         adb_process = subprocess.run([self.adb_path] + self.device_args + ['exec-out', 'screencap','-p'], stdout=subprocess.PIPE)
         byte_image = BytesIO(adb_process.stdout)
         pil_image = Image.open(byte_image)
         pil_image = np.array(pil_image)
         y, x, _ = pil_image.shape
-        self.screenwidth = x
-        self.screenheight = y
-
+        # self.screenwidth = x
+        # self.screenheight = y
+        if self.screenwidth != x or self.screenheight != y:
+            print(f'current dimension {x} x {y} does not match {self.screenwidth} x {self.screenheight}')
+            input('press enter to exit...')
+            sys.exit(0)
 
     def takeScreenshot(self):
         adb_process = subprocess.run([self.adb_path] + self.device_args + ['exec-out', 'screencap','-p'], stdout=subprocess.PIPE)
