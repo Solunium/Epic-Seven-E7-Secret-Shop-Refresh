@@ -517,7 +517,7 @@ class AppConfig():
         self.ALL_ITEMS = [['cov.png', 'Covenant bookmark', 184000],
                           ['mys.png', 'Mystic medal', 280000],
                           ['fb.png', 'Friendship bookmark', 18000]]
-        self.MANDATORY_PATH = {'cov.jpg', 'mys.jpg'}        #make item unable to be unselected
+        self.MANDATORY_PATH = {'cov.png', 'mys.png'}        #make item unable to be unselected
         self.DEBUG = False
         
 
