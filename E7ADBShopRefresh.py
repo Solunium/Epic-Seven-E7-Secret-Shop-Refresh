@@ -105,10 +105,10 @@ class E7ADBShopRefresh:
         self.screenheight = 1080
         self.checkScreenDimension()
 
-        self.storage.addItem('cov.jpg', 'Covenant bookmark', 184000)
-        self.storage.addItem('mys.jpg', 'Mystic medal', 280000)
+        self.storage.addItem('cov.png', 'Covenant bookmark', 184000)
+        self.storage.addItem('mys.png', 'Mystic medal', 280000)
         if self.debug:
-            self.storage.addItem('fb.jpg', 'Friendship bookmark', 18000)
+            self.storage.addItem('fb.png', 'Friendship bookmark', 18000)
 
     def start(self):
         self.loop_active = True
