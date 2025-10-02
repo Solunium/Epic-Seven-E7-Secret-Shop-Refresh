@@ -393,18 +393,31 @@ class SecretShopRefresh:
 
     #return item position
     def findItemPosition(self, process_screenshot, process_item):
-        
+        #reduce noise
+        process_screenshot = cv2.GaussianBlur(process_screenshot, (3, 3), 0)
+        process_item = cv2.GaussianBlur(process_item, (3, 3), 0)
+
         result = cv2.matchTemplate(process_screenshot, process_item, cv2.TM_CCOEFF_NORMED)
-        loc = np.where(result >= 0.75)
+        loc = np.where(result >= 0.8)
         x, y = 1, 1
-        
+        #print(len(loc[0]))
+
         #debug mode!
         if self.debug and loc[0].size > 0:
             debug_screenshot = process_screenshot.copy()
             debug_screenshot = cv2.cvtColor(debug_screenshot, cv2.COLOR_GRAY2RGB)
+            
+            #create heatmap
+            result_norm = cv2.normalize(result, None, 0, 1, cv2.NORM_MINMAX)
+            result_uint8 = np.uint8(result_norm * 255)
+            heatmap = cv2.applyColorMap(result_uint8, cv2.COLORMAP_JET)
+
+            #show all on screen
             for pt in zip (*loc[::-1]):
                 cv2.rectangle(debug_screenshot, pt, (pt[0] + process_item.shape[1], pt[1] + process_item.shape[0]), (0, 255, 0), 1)
+            
             cv2.imshow('Press any key to continue ...', debug_screenshot)
+            cv2.imshow('Heatmap', heatmap)
             #cv2.imwrite('Debug.png', debug_screenshot)
             cv2.waitKey(0)
             cv2.destroyAllWindows()
