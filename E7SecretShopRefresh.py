@@ -545,7 +545,7 @@ class AutoRefreshGUI:
         self.unite_text_color = '#dddddd'
 
         self.root.config(bg=self.unite_bg_color)
-        self.root.attributes("-alpha", 0.95)
+        #self.root.attributes("-alpha", 0.95)
 
         self.root.title('SHOP AUTO REFRESH')
         self.root.geometry('420x745')
