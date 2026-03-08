@@ -500,11 +500,13 @@ class SecretShopRefresh:
         x = self.window.left + self.window.width * 0.58
         y = self.window.top + self.window.height * 0.65
         pyautogui.moveTo(x, y)
-        time.sleep(0.1)
+        time.sleep(0.05)
         pyautogui.mouseDown(button='left')
-        time.sleep(0.1)
+        time.sleep(0.05)
         pyautogui.moveTo(x, y-self.window.height*0.277)
+        time.sleep(0.05)
         pyautogui.mouseUp(button='left')
+        time.sleep(0.05)
     
     def scrollUp(self):
         x = self.window.left + self.window.width * 0.58
