@@ -400,7 +400,7 @@ class SecretShopRefresh:
         # process_item = cv2.GaussianBlur(process_item, (3, 3), 0)
 
         result = cv2.matchTemplate(process_screenshot, process_item, cv2.TM_CCOEFF_NORMED)
-        loc = np.where(result >= 0.8)
+        loc = np.where(result >= 0.75)
         x, y = 1, 1
         #print(len(loc[0]))
 
