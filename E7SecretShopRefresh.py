@@ -39,7 +39,7 @@ class RefreshStatistic:
 
     def addShopItem(self, path: str, name='', price=0, count=0):
         image = cv2.imread(os.path.join('assets', path))
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        #image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         newItem = ShopItem(path, image, price, count)
         self.items[name] = newItem
     
@@ -215,7 +215,8 @@ class SecretShopRefresh:
                 
                 ###start of bundle refresh
                 screenshot = self.takeScreenshot()
-                process_screenshot = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
+                #process_screenshot = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
+                process_screenshot = screenshot
 
                 #show processed image
                 # cv2.imshow('Press any key to continue ...', process_screenshot)
@@ -253,7 +254,8 @@ class SecretShopRefresh:
 
                 ###start of bundle refresh
                 screenshot = self.takeScreenshot()
-                process_screenshot = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
+                #process_screenshot = cv2.cvtColor(screenshot, cv2.COLOR_BGR2GRAY)
+                process_screenshot = screenshot
 
                 #show processed image
                 # cv2.imshow('Press any key to continue ...', process_screenshot)
@@ -394,8 +396,8 @@ class SecretShopRefresh:
     #return item position
     def findItemPosition(self, process_screenshot, process_item):
         #reduce noise
-        process_screenshot = cv2.GaussianBlur(process_screenshot, (3, 3), 0)
-        process_item = cv2.GaussianBlur(process_item, (3, 3), 0)
+        # process_screenshot = cv2.GaussianBlur(process_screenshot, (3, 3), 0)
+        # process_item = cv2.GaussianBlur(process_item, (3, 3), 0)
 
         result = cv2.matchTemplate(process_screenshot, process_item, cv2.TM_CCOEFF_NORMED)
         loc = np.where(result >= 0.8)
@@ -405,7 +407,7 @@ class SecretShopRefresh:
         #debug mode!
         if self.debug and loc[0].size > 0:
             debug_screenshot = process_screenshot.copy()
-            debug_screenshot = cv2.cvtColor(debug_screenshot, cv2.COLOR_GRAY2RGB)
+            #debug_screenshot = cv2.cvtColor(debug_screenshot, cv2.COLOR_GRAY2RGB)
             
             #create heatmap
             result_norm = cv2.normalize(result, None, 0, 1, cv2.NORM_MINMAX)
