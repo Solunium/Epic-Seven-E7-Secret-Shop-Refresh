@@ -38,8 +38,9 @@ class RefreshStatistic:
         self.start_time = datetime.now()
 
     def addShopItem(self, path: str, name='', price=0, count=0):
+        #load image using cv2, need to convert from BGR to RGB
         image = cv2.imread(os.path.join('assets', path))
-        #image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         newItem = ShopItem(path, image, price, count)
         self.items[name] = newItem
     
@@ -400,12 +401,13 @@ class SecretShopRefresh:
         # process_item = cv2.GaussianBlur(process_item, (3, 3), 0)
 
         result = cv2.matchTemplate(process_screenshot, process_item, cv2.TM_CCOEFF_NORMED)
-        loc = np.where(result >= 0.75)
+        loc = np.where(result >= 0.70)
         x, y = 1, 1
         #print(len(loc[0]))
 
         #debug mode!
         if self.debug and loc[0].size > 0:
+            print('Number of template found: ' + loc[0].size)
             debug_screenshot = process_screenshot.copy()
             #debug_screenshot = cv2.cvtColor(debug_screenshot, cv2.COLOR_GRAY2RGB)
             
